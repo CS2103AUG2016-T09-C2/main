@@ -70,7 +70,7 @@ public class EditCommand extends Command {
         ReadOnlyTask taskToEdit = lastShownList.get(taskIndex - 1);
         
         try {
-            model.deleteTask(taskToEdit); //delete 
+            model.deleteTask(taskToEdit); //delete first before adding
             
             UniqueTagList oldTagList = taskToEdit.getTags();
             Name oldName = taskToEdit.getName();
