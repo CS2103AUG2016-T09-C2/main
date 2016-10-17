@@ -1,6 +1,8 @@
 package seedu.jimi.logic.commands;
 
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import seedu.jimi.commons.exceptions.IllegalValueException;
@@ -48,15 +50,15 @@ public class AddCommand extends Command {
      *
      * @throws IllegalValueException if any of the raw values are invalid
      */
-    public AddCommand(String name, String dateTime, Set<String> tags) throws IllegalValueException {
+    public AddCommand(String name, List<Date> dates, Set<String> tags) throws IllegalValueException {
         final Set<Tag> tagSet = new HashSet<>();
         for (String tagName : tags) {
             tagSet.add(new Tag(tagName));
         }
-        if (dateTime == null) {
+        if (dates.size() == 0) {
             this.toAdd = new FloatingTask(new Name(name), new UniqueTagList(tagSet));
         } else {
-            this.toAdd = new DeadlineTask(new Name(name), new DateTime(dateTime), new UniqueTagList(tagSet));
+            this.toAdd = new DeadlineTask(new Name(name), new DateTime(dates.get(0)), new UniqueTagList(tagSet));
         }
     }
     
@@ -65,17 +67,24 @@ public class AddCommand extends Command {
      * 
      * @throws IllegalValueException
      */
-    public AddCommand(String name, String startDateTime, String endDateTime, Set<String> tags)
+    public AddCommand(String name, List<Date> startDateTime, List<Date> endDateTime, Set<String> tags)
             throws IllegalValueException {
         final Set<Tag> tagSet = new HashSet<>();
         for (String tagName : tags) {
             tagSet.add(new Tag(tagName));
         }
         
-        this.toAdd = new Event(new Name(name), new DateTime(startDateTime), new DateTime(endDateTime),
-                new UniqueTagList(tagSet));
+        // events do not always have an end date 
+        DateTime endDateTimeToAdd = endDateTime.isEmpty() ? null : new DateTime(endDateTime.get(0));
+                
+        this.toAdd = new Event(
+                new Name(name), 
+                new DateTime(startDateTime.get(0)), 
+                endDateTimeToAdd,
+                new UniqueTagList(tagSet)
+        );
     }
-
+    
     @Override
     public CommandResult execute() {
         assert model != null;
