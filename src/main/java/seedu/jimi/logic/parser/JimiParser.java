@@ -91,7 +91,7 @@ public class JimiParser {
     private static final String XML_FILE_EXTENSION = ".xml";
     
     private static final String[] showCommandValidKeywords = { "floating tasks", "incomplete tasks", "complete tasks",
-            "today", "tomorrow", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+            "today", "tomorrow", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
     
     public JimiParser() {}
 
@@ -346,7 +346,7 @@ public class JimiParser {
         
         //goes through list of keywords to check if user input is valid
         for(int i = 0; i < this.showCommandValidKeywords.length ; i++) {
-            if(showCommandValidKeywords[i].contains(args)) {
+            if(showCommandValidKeywords[i].contains(args.toLowerCase())) {
                 keywordFound = true;
             }
         }
