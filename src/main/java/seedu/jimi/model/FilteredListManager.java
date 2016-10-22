@@ -160,7 +160,7 @@ public class FilteredListManager {
             }
         }
 
-        updateFilteredTaskList(id, composePredicates(qualifiersList, 0)::satisfies);
+        updateFilteredTaskList(id, composePredicates(qualifiersList, 0));
     }
 
     /**
@@ -203,8 +203,8 @@ public class FilteredListManager {
         return new WeekQualifier(li);
     }
 
-    private void updateFilteredTaskList(ListId id, Expression expression) {
-        listMap.get(id).setPredicate(expression::satisfies);
+    private void updateFilteredTaskList(ListId id, Predicate<ReadOnlyTask> expression) {
+        listMap.get(id).setPredicate(expression);
     }
 
     /*
@@ -218,12 +218,13 @@ public class FilteredListManager {
      * @param expressions List of constructed Qualifiers to be composed
      * @return Composed predicate expression
      */
-    private PredicateExpressionChain composePredicates(List<Qualifier> qualifiers, int index) {
+    private Predicate<ReadOnlyTask> composePredicates(List<Qualifier> qualifiers, int index) {
         if (index >= qualifiers.size() - 1) {
-            return new PredicateExpressionChain(new PredicateExpression(qualifiers.get(index)));
+            Predicate<ReadOnlyTask> p = (new PredicateExpression(qualifiers.get(index)))::satisfies;
+            return p;
         } else {
-            return new PredicateExpressionChain(new PredicateExpression(qualifiers.get(index)))
-                    .and(composePredicates(qualifiers, index + 1));
+            return PredicateExpressionChainer.and(new PredicateExpression(qualifiers.get(index)),
+                    composePredicates(qualifiers, index + 1));
         }
     }
 
@@ -239,25 +240,10 @@ public class FilteredListManager {
      *
      * @param <T>
      */
-    public class PredicateExpressionChain {
-        private ReadOnlyTask objectToTest;
-        private Expression predicateExpression;
-        
-        public PredicateExpressionChain(Expression pe) {
-            this.predicateExpression = pe;
-        }
-        
-        public boolean satisfies(ReadOnlyTask instanceToTest) {
-            this.objectToTest = instanceToTest;
-            return predicateExpression.satisfies(objectToTest);
-        }
-        
-        public PredicateExpressionChain and(PredicateExpressionChain other) {
-            return new PredicateExpressionChain(t -> this.satisfies(objectToTest) && other.satisfies(objectToTest));
-        }
-        
-        public PredicateExpressionChain or(PredicateExpressionChain other) {
-            return new PredicateExpressionChain(t -> this.satisfies(objectToTest) || other.satisfies(objectToTest));
+    public static class PredicateExpressionChainer {
+        public static Predicate<ReadOnlyTask> and(PredicateExpression pe, Predicate<ReadOnlyTask> ex) {
+            Predicate<ReadOnlyTask> p = pe::satisfies;
+            return p.and(ex);
         }
     }
     
