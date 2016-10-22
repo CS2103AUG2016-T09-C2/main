@@ -63,19 +63,19 @@ public class FilteredListManager {
                 .setPredicate(new PredicateExpression(new CompletedTaskQualifier(false))::satisfies);
         
         listMap.get(ListId.DAY_AHEAD_0)
-                .setPredicate(new PredicateExpression(new DateQualifier(ListId.DAY_AHEAD_0))::satisfies);
+                .setPredicate(new PredicateExpression(new WeekQualifier(ListId.DAY_AHEAD_0))::satisfies);
         listMap.get(ListId.DAY_AHEAD_1)
-                .setPredicate(new PredicateExpression(new DateQualifier(ListId.DAY_AHEAD_1))::satisfies);
+                .setPredicate(new PredicateExpression(new WeekQualifier(ListId.DAY_AHEAD_1))::satisfies);
         listMap.get(ListId.DAY_AHEAD_2)
-                .setPredicate(new PredicateExpression(new DateQualifier(ListId.DAY_AHEAD_2))::satisfies);
+                .setPredicate(new PredicateExpression(new WeekQualifier(ListId.DAY_AHEAD_2))::satisfies);
         listMap.get(ListId.DAY_AHEAD_3)
-                .setPredicate(new PredicateExpression(new DateQualifier(ListId.DAY_AHEAD_3))::satisfies);
+                .setPredicate(new PredicateExpression(new WeekQualifier(ListId.DAY_AHEAD_3))::satisfies);
         listMap.get(ListId.DAY_AHEAD_4)
-                .setPredicate(new PredicateExpression(new DateQualifier(ListId.DAY_AHEAD_4))::satisfies);
+                .setPredicate(new PredicateExpression(new WeekQualifier(ListId.DAY_AHEAD_4))::satisfies);
         listMap.get(ListId.DAY_AHEAD_5)
-                .setPredicate(new PredicateExpression(new DateQualifier(ListId.DAY_AHEAD_5))::satisfies);
+                .setPredicate(new PredicateExpression(new WeekQualifier(ListId.DAY_AHEAD_5))::satisfies);
         listMap.get(ListId.DAY_AHEAD_6)
-                .setPredicate(new PredicateExpression(new DateQualifier(ListId.DAY_AHEAD_6))::satisfies);
+                .setPredicate(new PredicateExpression(new WeekQualifier(ListId.DAY_AHEAD_6))::satisfies);
         
         listMap.get(ListId.TASKS_AGENDA)
                 .setPredicate(new PredicateExpression(new TaskQualifier(true))::satisfies);
@@ -87,7 +87,7 @@ public class FilteredListManager {
         return new UnmodifiableObservableList<>(listMap.get(id));
     }
     
-    public void updateRequiredFilteredTaskList(ListId id, Set<String> keywords, Qualifier... qualifiers) {
+    public void updateRequiredFilteredTaskList(ListId id, Set<String> keywords) {
         ArrayList<Qualifier> qualifiersList = new ArrayList<>();
         
         //add the must-have qualifiers for the respective filteredList
@@ -130,8 +130,9 @@ public class FilteredListManager {
             break;
         }
         
-        for(Qualifier q : qualifiers) {
-            qualifiersList.add(q);
+        //if nameQualifer is required
+        if(!keywords.isEmpty()) {
+            qualifiersList.add(new NameQualifier(keywords));
         }
         
         updateFilteredTaskList(id, composePredicates(qualifiersList, 0)::satisfies);
@@ -241,12 +242,12 @@ public class FilteredListManager {
         }
     }
     
-    private class DateQualifier implements Qualifier {
+    private class WeekQualifier implements Qualifier {
         private ListId id;
         private DayOfWeek dayOfWeek;
         private DayOfWeek currentDay;
         
-        DateQualifier(ListId i) {
+        WeekQualifier(ListId i) {
             id = i;
         }
         
