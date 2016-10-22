@@ -1,5 +1,8 @@
 package seedu.jimi.logic.commands;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import seedu.jimi.model.ModelManager;
 
 /**
@@ -29,10 +32,15 @@ public class ShowCommand extends Command {
         this.sectionToShow = args;
     }
     
+    /**
+     * Updates the agenda lists with new relevant predicates to update lists show to user.
+     */
     @Override
     public CommandResult execute() {
-        
         ((ModelManager) model).showTaskPanelSection(sectionToShow);
+        
+        model.updateFilteredAgendaTaskList(new HashSet<>(Arrays.asList(sectionToShow)));
+        model.updateFilteredAgendaEventList(new HashSet<>(Arrays.asList(sectionToShow)));
         
         return new CommandResult(MESSAGE_SUCCESS);
     }
