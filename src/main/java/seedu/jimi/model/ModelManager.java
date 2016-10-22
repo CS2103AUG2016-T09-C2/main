@@ -121,7 +121,7 @@ public class ModelManager extends ComponentManager implements Model {
     
     @Override
     public void updateFilteredTaskList(Set<String> keywords) {
-        this.filteredListManager.updateRequiredFilteredTaskList(ListId.TASKS_AGENDA, keywords);
+        this.filteredListManager.updateRequiredFilteredTaskList(ListId.TASKS_AGENDA, keywords, null);
     }
     
     @Override
@@ -131,7 +131,7 @@ public class ModelManager extends ComponentManager implements Model {
     
     @Override
     public void updateFilteredFloatingTaskList(Set<String> keywords) {
-        this.filteredListManager.updateRequiredFilteredTaskList(ListId.FLOATING_TASKS, keywords);
+        this.filteredListManager.updateRequiredFilteredTaskList(ListId.FLOATING_TASKS, keywords, "floating tasks");
     }
     
     @Override
@@ -141,7 +141,7 @@ public class ModelManager extends ComponentManager implements Model {
     
     @Override
     public void updateFilteredCompletedTaskList(Set<String> keywords) {
-        this.filteredListManager.updateRequiredFilteredTaskList(ListId.COMPLETED, keywords);
+        this.filteredListManager.updateRequiredFilteredTaskList(ListId.COMPLETED, keywords, "completed tasks");
     }
     
     @Override
@@ -151,7 +151,7 @@ public class ModelManager extends ComponentManager implements Model {
     
     @Override
     public void updateFilteredIncompleteTaskList(Set<String> keywords) {
-        this.filteredListManager.updateRequiredFilteredTaskList(ListId.INCOMPLETE, keywords);
+        this.filteredListManager.updateRequiredFilteredTaskList(ListId.INCOMPLETE, keywords, "incomplete tasks");
     }
     
     @Override
@@ -160,8 +160,8 @@ public class ModelManager extends ComponentManager implements Model {
     }
     
     @Override
-    public void updateFilteredAgendaTaskList(Set<String> keywords) {
-        this.filteredListManager.updateRequiredFilteredTaskList(ListId.TASKS_AGENDA, keywords);
+    public void updateFilteredAgendaTaskList(Set<String> keywords, String sectionToShow) {
+        this.filteredListManager.updateRequiredFilteredTaskList(ListId.TASKS_AGENDA, keywords, sectionToShow);
     }
     
     @Override
@@ -170,8 +170,8 @@ public class ModelManager extends ComponentManager implements Model {
     }
     
     @Override
-    public void updateFilteredAgendaEventList(Set<String> keywords) {
-        this.filteredListManager.updateRequiredFilteredTaskList(ListId.EVENTS_AGENDA, keywords);
+    public void updateFilteredAgendaEventList(Set<String> keywords, String sectionToShow) {
+        this.filteredListManager.updateRequiredFilteredTaskList(ListId.EVENTS_AGENDA, keywords, sectionToShow);
     }
     
     @Override

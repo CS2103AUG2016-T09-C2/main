@@ -62,9 +62,9 @@ public interface Model {
 
     void updateFilteredIncompleteTaskList(Set<String> keywords);
 
-    void updateFilteredAgendaTaskList(Set<String> keywords);
+    void updateFilteredAgendaTaskList(Set<String> keywords, String sectionToShow);
 
-    void updateFilteredAgendaEventList(Set<String> keywords);
+    void updateFilteredAgendaEventList(Set<String> keywords, String sectionToShow);
     
     /** Edits the floating task at the specified index */
     void editReadOnlyTask(int targetIdx, ReadOnlyTask task);
