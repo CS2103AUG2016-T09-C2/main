@@ -1,9 +1,12 @@
 package seedu.jimi.model;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import javafx.collections.transformation.FilteredList;
@@ -84,12 +87,72 @@ public class FilteredListManager {
         return new UnmodifiableObservableList<>(listMap.get(id));
     }
     
-    public void updateRequiredFilteredTaskList(ListId id, Set<String> keywords) {
-        updateFilteredTaskList(id, new PredicateExpression(new NameQualifier(keywords)));
+    public void updateRequiredFilteredTaskList(ListId id, Set<String> keywords, Qualifier... qualifiers) {
+        ArrayList<Qualifier> qualifiersList = new ArrayList<>();
+        
+        //add the must-have qualifiers for the respective filteredList
+        switch(id) {
+        case DAY_AHEAD_0:
+            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_0));
+            break;
+        case DAY_AHEAD_1:
+            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_1));
+            break;
+        case DAY_AHEAD_2:
+            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_2));
+            break;
+        case DAY_AHEAD_3:
+            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_3));
+            break;
+        case DAY_AHEAD_4:
+            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_4));
+            break;
+        case DAY_AHEAD_5:
+            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_5));
+            break;
+        case DAY_AHEAD_6:
+            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_6));
+            break;
+        case FLOATING_TASKS:
+            qualifiersList.add(new FloatingTaskQualifier(false));
+            break;
+        case COMPLETED:
+            qualifiersList.add(new CompletedTaskQualifier(true));
+            break;
+        case INCOMPLETE:
+            qualifiersList.add(new CompletedTaskQualifier(false));
+            break;
+        case TASKS_AGENDA:
+            qualifiersList.add(new TaskQualifier(true));
+            break;
+        case EVENTS_AGENDA:
+            qualifiersList.add(new EventQualifier(true));
+            break;
+        }
+        
+        for(Qualifier q : qualifiers) {
+            qualifiersList.add(q);
+        }
+        
+        updateFilteredTaskList(id, composePredicates(qualifiersList, 0)::satisfies);
     }
     
     private void updateFilteredTaskList(ListId id, Expression expression) {
         listMap.get(id).setPredicate(expression::satisfies);
+    }
+    
+    /**
+     * Recursively composes predicates and returns the aggregated predicate expression.
+     * @param expressions List of constructed Qualifiers to be composed
+     * @return Composed predicate expression
+     */
+    private PredicateExpressionChain composePredicates(List<Qualifier> qualifiers, int index) {
+        if (index >= qualifiers.size()) {
+            return new PredicateExpressionChain(new PredicateExpression(qualifiers.get(index)));
+        } else {
+            return new PredicateExpressionChain(new PredicateExpression(qualifiers.get(index)))
+                    .and(composePredicates(qualifiers, index + 1));
+        }
     }
     
     /*
@@ -99,11 +162,37 @@ public class FilteredListManager {
      */
     
     interface Expression {
-        
         boolean satisfies(ReadOnlyTask task);
-        
+
         String toString();
+    }
+    
+    /**
+     * Composes different predicate expressions together into 1 single expression.
+     * @author zexuan
+     *
+     * @param <T>
+     */
+    public class PredicateExpressionChain {
+        private ReadOnlyTask objectToTest;
+        private Expression predicateExpression;
         
+        public PredicateExpressionChain(Expression pe) {
+            this.predicateExpression = pe;
+        }
+        
+        public boolean satisfies(ReadOnlyTask instanceToTest) {
+            this.objectToTest = instanceToTest;
+            return predicateExpression.satisfies(objectToTest);
+        }
+        
+        public PredicateExpressionChain and(PredicateExpressionChain other) {
+            return new PredicateExpressionChain(t -> this.satisfies(objectToTest) && other.satisfies(objectToTest));
+        }
+        
+        public PredicateExpressionChain or(PredicateExpressionChain other) {
+            return new PredicateExpressionChain(t -> this.satisfies(objectToTest) || other.satisfies(objectToTest));
+        }
     }
     
     private class PredicateExpression implements Expression {
@@ -113,7 +202,7 @@ public class FilteredListManager {
         PredicateExpression(Qualifier qualifier) {
             this.qualifier = qualifier;
         }
-        
+
         @Override
         public boolean satisfies(ReadOnlyTask task) {
             return qualifier.run(task);
