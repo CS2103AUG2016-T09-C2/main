@@ -1,5 +1,8 @@
 package seedu.jimi.logic.commands;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import seedu.jimi.model.ModelManager;
 
 /**
@@ -15,7 +18,7 @@ public class ShowCommand extends Command {
             COMMAND_WORD + ": Shows certain sections of the task panel in the agenda panel. \n"
             + "Parameters: NAME_OF_SECTION_TO_DISPLAY\n" 
             + "Example: " + COMMAND_WORD + " floating tasks\n"
-            + "> Valid Keywords: Floating Tasks, Completed Tasks, Incomplete Tasks, Today, Tomorrow, {day of week displayed with capitalized first letter}";
+            + "> Valid Keywords: Floating Tasks, Completed Tasks, Incomplete Tasks, Today, Tomorrow, {day of week displayed}";
 
     public static final String MESSAGE_SUCCESS = "Displayed tasks and events.";
     
@@ -29,10 +32,15 @@ public class ShowCommand extends Command {
         this.sectionToShow = args;
     }
     
+    /**
+     * Updates the agenda lists with new relevant predicates to update lists show to user.
+     */
     @Override
     public CommandResult execute() {
-        
         ((ModelManager) model).showTaskPanelSection(sectionToShow);
+        
+        model.updateFilteredAgendaTaskList(null, sectionToShow);
+        model.updateFilteredAgendaEventList(null, sectionToShow);
         
         return new CommandResult(MESSAGE_SUCCESS);
     }
