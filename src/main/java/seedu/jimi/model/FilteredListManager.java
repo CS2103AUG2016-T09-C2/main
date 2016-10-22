@@ -1,6 +1,7 @@
 package seedu.jimi.model;
 
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,31 +88,31 @@ public class FilteredListManager {
         return new UnmodifiableObservableList<>(listMap.get(id));
     }
     
-    public void updateRequiredFilteredTaskList(ListId id, Set<String> keywords) {
+    public void updateRequiredFilteredTaskList(ListId id, Set<String> keywords, String sectionToShow) {
         ArrayList<Qualifier> qualifiersList = new ArrayList<>();
         
         //add the must-have qualifiers for the respective filteredList
         switch(id) {
         case DAY_AHEAD_0:
-            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_0));
+            qualifiersList.add(new WeekQualifier(ListId.DAY_AHEAD_0));
             break;
         case DAY_AHEAD_1:
-            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_1));
+            qualifiersList.add(new WeekQualifier(ListId.DAY_AHEAD_1));
             break;
         case DAY_AHEAD_2:
-            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_2));
+            qualifiersList.add(new WeekQualifier(ListId.DAY_AHEAD_2));
             break;
         case DAY_AHEAD_3:
-            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_3));
+            qualifiersList.add(new WeekQualifier(ListId.DAY_AHEAD_3));
             break;
         case DAY_AHEAD_4:
-            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_4));
+            qualifiersList.add(new WeekQualifier(ListId.DAY_AHEAD_4));
             break;
         case DAY_AHEAD_5:
-            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_5));
+            qualifiersList.add(new WeekQualifier(ListId.DAY_AHEAD_5));
             break;
         case DAY_AHEAD_6:
-            qualifiersList.add(new DateQualifier(ListId.DAY_AHEAD_6));
+            qualifiersList.add(new WeekQualifier(ListId.DAY_AHEAD_6));
             break;
         case FLOATING_TASKS:
             qualifiersList.add(new FloatingTaskQualifier(false));
@@ -131,16 +132,86 @@ public class FilteredListManager {
         }
         
         //if nameQualifer is required
-        if(!keywords.isEmpty()) {
+        if(keywords != null && !keywords.isEmpty()) {
             qualifiersList.add(new NameQualifier(keywords));
         }
         
+        //if need to show certain list respective to task list panel
+        if(sectionToShow != null) {
+            switch(sectionToShow.toLowerCase().trim()) {
+            case "floating tasks":
+                qualifiersList.add(new FloatingTaskQualifier(false));
+                break;
+            case "completed tasks":
+                qualifiersList.add(new CompletedTaskQualifier(true));
+                break;
+            case "incomplete tasks":
+                qualifiersList.add(new CompletedTaskQualifier(false));
+                break;
+            case "today":
+                qualifiersList.add(new WeekQualifier(ListId.DAY_AHEAD_0));
+                break;
+            case "tomorrow":
+                qualifiersList.add(new WeekQualifier(ListId.DAY_AHEAD_1));
+                break;
+           default: //assume sectionToShow is a day of week
+                qualifiersList.add(getRequiredWeekQualifier(sectionToShow));
+                break;
+            }
+        }
+
         updateFilteredTaskList(id, composePredicates(qualifiersList, 0)::satisfies);
     }
-    
+
+    /**
+     * Finds the day to be displayed and calls its respective method to load its
+     * respective list.
+     * 
+     * @param sectionToDisplay
+     */
+    private WeekQualifier getRequiredWeekQualifier(String sectionToDisplay) {
+        DateTime dayNow = new DateTime();
+        LocalDateTime dayRequired = dayNow.getLocalDateTime();
+        int differenceInDays = 0;
+        // find required datetime
+        for (int i = 0; i < 7; i++) {
+            if (dayRequired.getDayOfWeek().plus(i).toString().toLowerCase().contains(sectionToDisplay)) {
+                differenceInDays = i;
+            }
+        }
+        
+        ListId li = ListId.DAY_AHEAD_0;
+        
+        switch(differenceInDays) {
+        case 2:
+            li = ListId.DAY_AHEAD_2;
+            break;
+        case 3:
+            li = ListId.DAY_AHEAD_3;
+            break;
+        case 4:
+            li = ListId.DAY_AHEAD_4;
+            break;
+        case 5:
+            li = ListId.DAY_AHEAD_5;
+            break;
+        case 6:
+            li = ListId.DAY_AHEAD_6;
+            break;
+        }
+        
+        return new WeekQualifier(li);
+    }
+
     private void updateFilteredTaskList(ListId id, Expression expression) {
         listMap.get(id).setPredicate(expression::satisfies);
     }
+
+    /*
+     *  ============================================
+     *  Private qualifier classes used for filtering
+     *  ============================================
+     */
     
     /**
      * Recursively composes predicates and returns the aggregated predicate expression.
@@ -148,20 +219,14 @@ public class FilteredListManager {
      * @return Composed predicate expression
      */
     private PredicateExpressionChain composePredicates(List<Qualifier> qualifiers, int index) {
-        if (index >= qualifiers.size()) {
+        if (index >= qualifiers.size() - 1) {
             return new PredicateExpressionChain(new PredicateExpression(qualifiers.get(index)));
         } else {
             return new PredicateExpressionChain(new PredicateExpression(qualifiers.get(index)))
                     .and(composePredicates(qualifiers, index + 1));
         }
     }
-    
-    /*
-     *  ============================================
-     *  Private qualifier classes used for filtering
-     *  ============================================
-     */
-    
+
     interface Expression {
         boolean satisfies(ReadOnlyTask task);
 
