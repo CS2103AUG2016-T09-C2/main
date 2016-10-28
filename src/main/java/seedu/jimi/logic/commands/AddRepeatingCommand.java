@@ -36,20 +36,69 @@ public class AddRepeatingCommand extends Command implements TaskBookEditor {
     public static final String MESSAGE_WRONG_FREQUENCY = "Wrong frequency!\n" + MESSAGE_USAGE;
     
     private final List<AddCommand> addCommands;
+    private String[] freqStrs;
+    private int freqQuantifier;
+    private String freqWord;
     
     public AddRepeatingCommand(String name, List<Date> dates, 
-            Set<String> tags, String priority, String frequency, int times) throws IllegalValueException {
+            Set<String> tags, String priority, String frequency, int times) 
+                    throws IllegalValueException {
+        this(name, tags, priority, frequency);
+        Date first = getFirstOccurrence(dates, freqWord);
+        for(int i = 0; i < times; i ++ ) {
+            List<Date> newDates = 
+                    getDateListFromDate(Frequency.getNextDate(first, i * freqQuantifier, freqWord));
+            if (dates.isEmpty()) { // originally a floating
+addCommands.add(new AddCommand(name, newDates, new ArrayList<Date>(), tags, priority));
+            } else { // originally a deadline
+                addCommands.add(new AddCommand(name, newDates, tags, priority)); 
+            }
+        }
+    }
+    
+    public AddRepeatingCommand(String name, List<Date> startDates, List<Date> endDates,
+            Set<String> tags, String priority, String frequency, int times) 
+                    throws IllegalValueException {
+        this(name, tags, priority, frequency);
+        Date firstStart = getFirstOccurrence(startDates, freqWord);
+        Date firstEnd;
+        if(endDates.isEmpty()) {
+            firstEnd = null;
+        } else {
+            firstEnd = getFirstOccurrence(endDates, freqWord);
+            if(firstStart.compareTo(firstEnd) > 0) {
+                LocalDateTime ldt = 
+                    LocalDateTime.ofInstant(firstEnd.toInstant(), ZoneId.systemDefault()).plusWeeks(1);
+                firstEnd = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+            }
+        }
+        for(int i = 0; i < times; i ++ ) {
+            if(firstEnd == null) {
+                List<Date> newStarts = 
+                        getDateListFromDate(Frequency.getNextDate(firstStart, i * freqQuantifier, freqWord));
+                addCommands.add(new AddCommand(name, newStarts, new ArrayList<Date>(), tags, priority));
+            } else {
+                List<Date> newStarts =
+                        getDateListFromDate(Frequency.getNextDate(firstStart, i * freqQuantifier, freqWord));
+                List<Date> newEnds = 
+                        getDateListFromDate(Frequency.getNextDate(firstEnd, i * freqQuantifier, freqWord));
+                addCommands.add(new AddCommand(name, newStarts, newEnds, tags, priority));
+                
+            }
+        }
+    }
+    
+    private AddRepeatingCommand(String name, Set<String> tags, String priority, String frequency) 
+            throws IllegalValueException {
         assert frequency != null;
-        addCommands = new ArrayList<>(times);
+        addCommands = new ArrayList<>();
         final Set<Tag> tagSet = new HashSet<>();
         for (String tagName : tags) {
             tagSet.add(new Tag(tagName));
         }
         
         String str = frequency.trim().toLowerCase();
-        String[] freqStrs = str.split("[\\W || \\s]+");
-        String freqWord;
-        int freqQuantifier;
+        freqStrs = str.split("[\\W || \\s]+");
         if(freqStrs.length == 1) {
             freqQuantifier = 1;
             freqWord = freqStrs[0];
@@ -59,32 +108,33 @@ public class AddRepeatingCommand extends Command implements TaskBookEditor {
             freqWord = freqStrs[1];
         }
         else throw new IllegalValueException(MESSAGE_WRONG_FREQUENCY);
-        Date first = getFirstOccurrence(dates, freqWord);
-        for(int i = 0; i < times; i ++ ) {
-            List<Date> newDates = 
-                    getDateListFromDate(Frequency.getNextDate(first, i * freqQuantifier, freqWord));
-            addCommands.add(new AddCommand(name, newDates, tags, priority));
-        }
+        
     }
 
     private Date getFirstOccurrence(final List<Date> dates, final String freqWord) 
             throws IllegalValueException {               
+        for(Date dt : dates) System.out.println(dt.toString() + "\n");
         LocalDateTime first;
         if(Frequency.isDayOfWeek(freqWord)) {
-            if(dates.isEmpty())
-               first = LocalDateTime.now().with(DayOfWeek.valueOf(Frequency.getDayOfWeekFull(freqWord)));
-            else {
-                LocalDateTime ldt = LocalDateTime.ofInstant(
-                        dates.get(0).toInstant(), ZoneId.systemDefault());
-                first = ldt.with(DayOfWeek.valueOf(Frequency.getDayOfWeekFull(freqWord)));
+            DayOfWeek dow = DayOfWeek.valueOf(Frequency.getDayOfWeekFull(freqWord));
+            LocalDateTime ldt;
+            if(dates.isEmpty()) {
+                ldt = LocalDateTime.now();
+            } else {
+                ldt = LocalDateTime.ofInstant(dates.get(0).toInstant(), ZoneId.systemDefault());
             }
+            if(ldt.getDayOfWeek().compareTo(dow) <= 0) {
+                first = ldt.with(dow);
+            } else {
+                first = ldt.plusWeeks(1).with(dow);
+            }
+            return Date.from(first.atZone(ZoneId.systemDefault()).toInstant());
         } else {
             if(dates.isEmpty())
                 return new Date();
             else
                 return dates.get(0);
         }
-        return Date.from(first.atZone(ZoneId.systemDefault()).toInstant());
     }
     
     private List<Date> getDateListFromDate(final Date date) {
@@ -95,14 +145,17 @@ public class AddRepeatingCommand extends Command implements TaskBookEditor {
     
     @Override
     public CommandResult execute() {
-        // TODO Auto-generated method stub
-        return null;
+        StringBuilder result = new StringBuilder("The following task(s) added: \n");
+        for(AddCommand ac : addCommands) {
+            ac.setData(model);
+            result.append(ac.execute().feedbackToUser + "\n");
+        }
+        return new CommandResult(result.toString());
     }
 
     @Override
     public boolean isValidCommandWord(String commandWord) {
-        // TODO Auto-generated method stub
-        return false;
+        return new AddCommand().isValidCommandWord(commandWord);
     }
 
 }
