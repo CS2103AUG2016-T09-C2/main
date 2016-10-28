@@ -39,17 +39,18 @@ public class AddRepeatingCommand extends Command implements TaskBookEditor {
     private String[] freqStrs;
     private int freqQuantifier;
     private String freqWord;
+    private int times;
     
     public AddRepeatingCommand(String name, List<Date> dates, 
-            Set<String> tags, String priority, String frequency, int times) 
+            Set<String> tags, String priority, String frequency, String timesStr) 
                     throws IllegalValueException {
-        this(name, tags, priority, frequency);
+        this(name, tags, priority, frequency, timesStr);
         Date first = getFirstOccurrence(dates, freqWord);
         for(int i = 0; i < times; i ++ ) {
             List<Date> newDates = 
                     getDateListFromDate(Frequency.getNextDate(first, i * freqQuantifier, freqWord));
             if (dates.isEmpty()) { // originally a floating
-addCommands.add(new AddCommand(name, newDates, new ArrayList<Date>(), tags, priority));
+                addCommands.add(new AddCommand(name, newDates, new ArrayList<Date>(), tags, priority));
             } else { // originally a deadline
                 addCommands.add(new AddCommand(name, newDates, tags, priority)); 
             }
@@ -57,9 +58,9 @@ addCommands.add(new AddCommand(name, newDates, new ArrayList<Date>(), tags, prio
     }
     
     public AddRepeatingCommand(String name, List<Date> startDates, List<Date> endDates,
-            Set<String> tags, String priority, String frequency, int times) 
+            Set<String> tags, String priority, String frequency, String timesStr) 
                     throws IllegalValueException {
-        this(name, tags, priority, frequency);
+        this(name, tags, priority, frequency, timesStr);       
         Date firstStart = getFirstOccurrence(startDates, freqWord);
         Date firstEnd;
         if(endDates.isEmpty()) {
@@ -88,7 +89,8 @@ addCommands.add(new AddCommand(name, newDates, new ArrayList<Date>(), tags, prio
         }
     }
     
-    private AddRepeatingCommand(String name, Set<String> tags, String priority, String frequency) 
+    private AddRepeatingCommand(String name, Set<String> tags, 
+            String priority, String frequency, String timesStr) 
             throws IllegalValueException {
         assert frequency != null;
         addCommands = new ArrayList<>();
@@ -96,7 +98,7 @@ addCommands.add(new AddCommand(name, newDates, new ArrayList<Date>(), tags, prio
         for (String tagName : tags) {
             tagSet.add(new Tag(tagName));
         }
-        
+        times = StringToInt.parse(timesStr);
         String str = frequency.trim().toLowerCase();
         freqStrs = str.split("[\\W || \\s]+");
         if(freqStrs.length == 1) {
