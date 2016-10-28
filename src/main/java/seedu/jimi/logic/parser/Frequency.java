@@ -40,15 +40,18 @@ public class Frequency {
     private static final HashSet<String> sundayEquivalent = new HashSet<>(Arrays.asList(
             "sunday", "sun"
     ));
+    private static final HashSet<String> weekendEquivalents = new HashSet<>(Arrays.asList(
+            "weekend", "weekends"
+    ));
     private static final HashSet<String> dayOfWeekEquivalents = new HashSet<>(Arrays.asList(
             "monday", "mon", "tuesday", "tu", "tue", "tues", "wednesday", "wed", 
             "thursday", "thu", "thur", "thurs", "friday", "fri",
-            "saturday", "sat", "sunday", "sun"
+            "saturday", "sat", "sunday", "sun", "weekend", "weekends"
     ));
     private static final HashSet<String> weekEquivalents = new HashSet<>(Arrays.asList(
             "week", "weeks", "w", "monday", "mon", "tuesday", "tu", "tue", "tues", 
             "wednesday", "wed", "thursday", "thu", "thur", "thurs", "friday", "fri",
-            "saturday", "sat", "sunday", "sun"
+            "saturday", "sat", "sunday", "sun", "weekend", "weekends"
     ));
     private static final HashSet<String> monthEquivalents = new HashSet<>(Arrays.asList(
             "month", "months", "january", "jan", "feburuary", "feb", "march", "mar", "april", "apr",
@@ -84,6 +87,7 @@ public class Frequency {
         else if(fridayEquivalent.contains(lowerStr))    return "FRIDAY";
         else if(saturdayEquivalent.contains(lowerStr))  return "SATURDAY";
         else if(sundayEquivalent.contains(lowerStr))    return "SUNDAY";
+        else if(weekendEquivalents.contains(lowerStr))  return "SATURDAY";
         else throw new IllegalValueException("Wrong week of day input!");
     }
     
