@@ -181,14 +181,26 @@ public class JimiParser {
                 ADD_TASK_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
         final Matcher eventDetailsMatcher =
                 ADD_EVENT_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
+        final Matcher taskRepeatDetailsMatcher = 
+                ADD_TASK_REPEAT_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
+        final Matcher eventRepeatDetailsMatcher = 
+                ADD_EVENT_REPEAT_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
         
-        if (taskDetailsMatcher.matches()) { // if user trying to add task 
+        if (taskRepeatDetailsMatcher.matches()) {// if user trying to add repeating task
+            System.out.println(1);
+            return generateAddRepeatingCommandForTask(detailsAndTagsMatcher, taskRepeatDetailsMatcher);
+        } else if (eventRepeatDetailsMatcher.matches()) {// if user trying to add repeating event
+            System.out.println(2);
+            return generateAddRepeatingCommandForEvent(detailsAndTagsMatcher, eventRepeatDetailsMatcher);
+        } else if (taskDetailsMatcher.matches()) { // if user trying to add task 
+            System.out.println(3);
             return generateAddCommandForTask(detailsAndTagsMatcher, taskDetailsMatcher);
         } else if (eventDetailsMatcher.matches()) { // if user trying to add event
             return generateAddCommandForEvent(detailsAndTagsMatcher, eventDetailsMatcher);
-        }
+        } 
         
         /* default return IncorrectCommand */
+        System.out.println(5);
         return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
     }
     
@@ -220,6 +232,40 @@ public class JimiParser {
             return new IncorrectCommand(ive.getMessage());
         }
     }
+    
+    /**
+     * Creates an AddRepeatingCommand in the context of adding a repeating event.
+     * 
+     * @return an AddRepeatingCommand if raw args is valid, else IncorrectCommand
+     */
+    private Command generateAddRepeatingCommandForEvent(final Matcher detailsAndTagsMatcher, final Matcher eventRepeatDetailsMatcher) {
+        try {
+            List<Date> startDates = parseStringToDate(eventRepeatDetailsMatcher.group("startDateTime"));
+            List<Date> endDates = parseStringToDate(eventRepeatDetailsMatcher.group("endDateTime"));
+            String freqStr = eventRepeatDetailsMatcher.group("frequency");
+            Frequency frequency = new Frequency(freqStr);
+            
+            String priority = getPriorityFromArgs(detailsAndTagsMatcher.group("priorityArguments"));
+            if (priority == null) {
+                priority = Priority.PRIO_NONE;
+            }
+            
+            return new AddRepeatingCommand(
+                    eventRepeatDetailsMatcher.group("taskDetails"),
+                    startDates,
+                    endDates,
+                    frequency.getFreqQuantifier(),
+                    frequency.getFreqWord(),
+                    frequency.getNumberOfTimes(),
+                    getTagsFromArgs(detailsAndTagsMatcher.group("tagArguments")),
+                    priority
+            );
+        } catch (DateNotParsableException e) {
+            return new IncorrectCommand(e.getMessage());
+        } catch (IllegalValueException ive) {
+            return new IncorrectCommand(ive.getMessage());
+        }
+    }
 
     /**
      * Creates an AddCommand in the context of adding an task.
@@ -238,6 +284,33 @@ public class JimiParser {
             return new AddCommand(
                     taskDetailsMatcher.group("taskDetails"),
                     dates,
+                    getTagsFromArgs(detailsAndTagsMatcher.group("tagArguments")),
+                    priority
+            );
+        } catch (DateNotParsableException e) {
+            return new IncorrectCommand(e.getMessage());
+        } catch (IllegalValueException ive) {
+            return new IncorrectCommand(ive.getMessage());
+        }
+    }
+    
+    private Command generateAddRepeatingCommandForTask(final Matcher detailsAndTagsMatcher, final Matcher taskRepeatDetailsMatcher) {
+        try {
+            List<Date> dates = parseStringToDate(taskRepeatDetailsMatcher.group("dateTime"));
+            String freqStr = taskRepeatDetailsMatcher.group("frequency");
+            Frequency frequency = new Frequency(freqStr);
+            
+            String priority = getPriorityFromArgs(detailsAndTagsMatcher.group("priorityArguments"));
+            if (priority == null) {
+                priority = Priority.PRIO_NONE;
+            }
+            
+            return new AddRepeatingCommand(
+                    taskRepeatDetailsMatcher.group("taskDetails"),
+                    dates,
+                    frequency.getFreqQuantifier(),
+                    frequency.getFreqWord(),
+                    frequency.getNumberOfTimes(),
                     getTagsFromArgs(detailsAndTagsMatcher.group("tagArguments")),
                     priority
             );
