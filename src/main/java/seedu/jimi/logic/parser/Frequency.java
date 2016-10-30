@@ -88,7 +88,7 @@ public class Frequency {
             }
             break;
         case 4 :
-            if (freqStrs[2].contains("time")) {
+            if (freqStrs[3].contains("time")) {
                 freqQuantifier = StringToInt.parse(freqStrs[0]);
                 freqWord = freqStrs[1];
                 numberOfTimes = StringToInt.parse(freqStrs[2]);
