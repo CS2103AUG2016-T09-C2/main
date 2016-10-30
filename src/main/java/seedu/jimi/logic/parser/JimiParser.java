@@ -187,20 +187,15 @@ public class JimiParser {
                 ADD_EVENT_REPEAT_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
         
         if (taskRepeatDetailsMatcher.matches()) {// if user trying to add repeating task
-            System.out.println(1);
-            return generateAddRepeatingCommandForTask(detailsAndTagsMatcher, taskRepeatDetailsMatcher);
         } else if (eventRepeatDetailsMatcher.matches()) {// if user trying to add repeating event
-            System.out.println(2);
             return generateAddRepeatingCommandForEvent(detailsAndTagsMatcher, eventRepeatDetailsMatcher);
         } else if (taskDetailsMatcher.matches()) { // if user trying to add task 
-            System.out.println(3);
             return generateAddCommandForTask(detailsAndTagsMatcher, taskDetailsMatcher);
         } else if (eventDetailsMatcher.matches()) { // if user trying to add event
             return generateAddCommandForEvent(detailsAndTagsMatcher, eventDetailsMatcher);
         } 
         
         /* default return IncorrectCommand */
-        System.out.println(5);
         return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
     }
     
