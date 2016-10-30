@@ -20,15 +20,9 @@ public class AddRepeatingCommand extends Command implements TaskBookEditor {
     public static final String MESSAGE_USAGE = 
             COMMAND_WORD + ": Adds a task or event to Jimi with one optional tag.\n"
             + "\n"
-            + "To add a task:\n"
-            + "Parameters: \"TASK_DETAILS\" [due DATE_TIME] [t/TAG]\n"
-            + "Example: " + COMMAND_WORD + " \"do dishes\" t/important\n"
-            + "\n"
-            + "To add an event:\n"
-            + "Parameters: \"TASK_DETAILS\" on|from START_DATE_TIME [to END_DATE_TIME] [t/TAG]\n"
-            + "Example: " + COMMAND_WORD + " \"linkin park concert\" on sunday 2pm t/fun\n"
-            + "\n"
-            + "> Tip: Typing 'a' or 'ad' instead of 'add' works too.\n";
+            + "To add a repeating task/event, add the following at the end:\n"
+            + "[every|repeat|recur][freqQuantifier][freqWord][numberOfTimes]\n"
+            + "Example : add \"CS2103\" on 2 pm every friday three times"; 
 
     public static final String MESSAGE_SUCCESS = "New task added: %1$s";
     public static final String MESSAGE_DUPLICATE_TASK = "This task already exists in Jimi";
