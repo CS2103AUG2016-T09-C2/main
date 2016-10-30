@@ -15,7 +15,7 @@ public class Frequency {
             "minute", "minutes", "min", "mins", "m"
     ));
     private static final HashSet<String> hourEquivalents = new HashSet<>(Arrays.asList(
-            "hour", "hours", "hr", "hrs", "h"
+            "hour", "hours", "hourly", "hr", "hrs", "h"
     ));
     private static final HashSet<String> dayEquivalents = new HashSet<>(Arrays.asList(
             "day", "days", "d"
@@ -50,12 +50,12 @@ public class Frequency {
             "saturday", "sat", "sunday", "sun", "weekend", "weekends"
     ));
     private static final HashSet<String> weekEquivalents = new HashSet<>(Arrays.asList(
-            "week", "weeks", "w", "monday", "mon", "tuesday", "tu", "tue", "tues", 
+            "week", "weeks", "weekly", "w", "monday", "mon", "tuesday", "tu", "tue", "tues", 
             "wednesday", "wed", "thursday", "thu", "thur", "thurs", "friday", "fri",
             "saturday", "sat", "sunday", "sun", "weekend", "weekends"
     ));
     private static final HashSet<String> monthEquivalents = new HashSet<>(Arrays.asList(
-            "month", "months", "january", "jan", "feburuary", "feb", "march", "mar", "april", "apr",
+            "month", "months", "monthly", "january", "jan", "feburuary", "feb", "march", "mar", "april", "apr",
             "may", "june", "jun", "july", "jul", "august", "aug", "september", "sep", "october", "oct",
             "november", "nov", "december", "dec"
     ));
@@ -76,9 +76,23 @@ public class Frequency {
             numberOfTimes = StringToInt.parse(freqStrs[1]);
             break;
         case 3 :
-            freqQuantifier = StringToInt.parse(freqStrs[0]);
-            freqWord = freqStrs[1];
-            numberOfTimes = StringToInt.parse(freqStrs[2]);
+            if (freqStrs[2].contains("time")) {
+                freqQuantifier = 1;
+                freqWord = freqStrs[0];
+                numberOfTimes = StringToInt.parse(freqStrs[1]);
+            } else {
+                freqQuantifier = StringToInt.parse(freqStrs[0]);
+                freqWord = freqStrs[1];
+                numberOfTimes = StringToInt.parse(freqStrs[2]);
+
+            }
+            break;
+        case 4 :
+            if (freqStrs[2].contains("time")) {
+                freqQuantifier = StringToInt.parse(freqStrs[0]);
+                freqWord = freqStrs[1];
+                numberOfTimes = StringToInt.parse(freqStrs[2]);
+            }
             break;
         default:
             throw new IllegalValueException(MESSAGE_INVALID_FREQUENCY_FIELD);
