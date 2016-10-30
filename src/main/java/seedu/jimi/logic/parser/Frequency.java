@@ -10,6 +10,7 @@ import seedu.jimi.commons.exceptions.IllegalValueException;
 
 public class Frequency {
     private static final String MESSAGE_INVALID_FREQUENCY_NAME = "Invalid frequency name!";
+    private static final String MESSAGE_INVALID_FREQUENCY_FIELD = "Invalid frequency field!";
     private static final HashSet<String> minuteEquivalents = new HashSet<>(Arrays.asList(
             "minute", "minutes", "min", "mins", "m"
     ));
@@ -62,6 +63,40 @@ public class Frequency {
             "year", "years", "y"
     ));
     
+    private String freqWord;
+    private int freqQuantifier;
+    private int numberOfTimes;
+    
+    public Frequency(String str) throws IllegalValueException {
+        String[] freqStrs = str.trim().toLowerCase().split("[\\W || \\s]+");
+        switch(freqStrs.length) {
+        case 2 :
+            freqQuantifier = 1;
+            freqWord = freqStrs[0];
+            numberOfTimes = StringToInt.parse(freqStrs[1]);
+            break;
+        case 3 :
+            freqQuantifier = StringToInt.parse(freqStrs[0]);
+            freqWord = freqStrs[1];
+            numberOfTimes = StringToInt.parse(freqStrs[2]);
+            break;
+        default:
+            throw new IllegalValueException(MESSAGE_INVALID_FREQUENCY_FIELD);
+        }      
+    }
+    
+    public String getFreqWord() {
+        return freqWord;
+    }
+    
+    public int getFreqQuantifier() {
+        return freqQuantifier;
+    }
+    
+    public int getNumberOfTimes() {
+        return numberOfTimes;
+    }
+    
     public static boolean isMinute(final String str) {
         return minuteEquivalents.contains(str);
     }
@@ -102,6 +137,7 @@ public class Frequency {
     public static boolean isYear(final String str) {
         return yearEquivalents.contains(str.toLowerCase());
     }
+    
     
     public static Date getNextDate(final Date date, final int quantifier, final String freq) 
             throws IllegalValueException {

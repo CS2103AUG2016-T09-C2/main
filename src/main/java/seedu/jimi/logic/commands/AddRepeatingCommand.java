@@ -11,7 +11,6 @@ import java.util.Set;
 
 import seedu.jimi.commons.exceptions.IllegalValueException;
 import seedu.jimi.logic.parser.Frequency;
-import seedu.jimi.logic.parser.StringToInt;
 import seedu.jimi.model.tag.Tag;
 
 public class AddRepeatingCommand extends Command implements TaskBookEditor {
@@ -36,17 +35,18 @@ public class AddRepeatingCommand extends Command implements TaskBookEditor {
     public static final String MESSAGE_WRONG_FREQUENCY = "Wrong frequency!\n" + MESSAGE_USAGE;
     
     private final List<AddCommand> addCommands;
-    private String[] freqStrs;
-    private int freqQuantifier;
-    private String freqWord;
-    private int times;
+
     
-    public AddRepeatingCommand(String name, List<Date> dates, 
-            Set<String> tags, String priority, String frequency, String timesStr) 
+    public AddRepeatingCommand(String name, List<Date> dates, int freqQuantifier, String freqWord, int numberOfTimes,
+            Set<String> tags, String priority) 
                     throws IllegalValueException {
-        this(name, tags, priority, frequency, timesStr);
+        addCommands = new ArrayList<>();
+        final Set<Tag> tagSet = new HashSet<>();
+        for (String tagName : tags) {
+            tagSet.add(new Tag(tagName));
+        }
         Date first = getFirstOccurrence(dates, freqWord);
-        for(int i = 0; i < times; i ++ ) {
+        for(int i = 0; i < numberOfTimes; i ++ ) {
             List<Date> newDates = 
                     getDateListFromDate(Frequency.getNextDate(first, i * freqQuantifier, freqWord));
             if (dates.isEmpty()) { // originally a floating
@@ -58,9 +58,13 @@ public class AddRepeatingCommand extends Command implements TaskBookEditor {
     }
     
     public AddRepeatingCommand(String name, List<Date> startDates, List<Date> endDates,
-            Set<String> tags, String priority, String frequency, String timesStr) 
+            int freqQuantifier, String freqWord, int numberOfTimes, Set<String> tags, String priority) 
                     throws IllegalValueException {
-        this(name, tags, priority, frequency, timesStr);       
+        addCommands = new ArrayList<>();
+        final Set<Tag> tagSet = new HashSet<>();
+        for (String tagName : tags) {
+            tagSet.add(new Tag(tagName));
+        } 
         Date firstStart = getFirstOccurrence(startDates, freqWord);
         Date firstEnd;
         if(endDates.isEmpty()) {
@@ -73,7 +77,7 @@ public class AddRepeatingCommand extends Command implements TaskBookEditor {
                 firstEnd = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
             }
         }
-        for(int i = 0; i < times; i ++ ) {
+        for(int i = 0; i < numberOfTimes; i ++ ) {
             if(firstEnd == null) {
                 List<Date> newStarts = 
                         getDateListFromDate(Frequency.getNextDate(firstStart, i * freqQuantifier, freqWord));
@@ -89,29 +93,7 @@ public class AddRepeatingCommand extends Command implements TaskBookEditor {
         }
     }
     
-    private AddRepeatingCommand(String name, Set<String> tags, 
-            String priority, String frequency, String timesStr) 
-            throws IllegalValueException {
-        assert frequency != null;
-        addCommands = new ArrayList<>();
-        final Set<Tag> tagSet = new HashSet<>();
-        for (String tagName : tags) {
-            tagSet.add(new Tag(tagName));
-        }
-        times = StringToInt.parse(timesStr);
-        String str = frequency.trim().toLowerCase();
-        freqStrs = str.split("[\\W || \\s]+");
-        if(freqStrs.length == 1) {
-            freqQuantifier = 1;
-            freqWord = freqStrs[0];
-        }
-        else if(freqStrs.length == 2) {
-            freqQuantifier = StringToInt.parse(freqStrs[0]);
-            freqWord = freqStrs[1];
-        }
-        else throw new IllegalValueException(MESSAGE_WRONG_FREQUENCY);
-        
-    }
+ 
 
     private Date getFirstOccurrence(final List<Date> dates, final String freqWord) 
             throws IllegalValueException {               
