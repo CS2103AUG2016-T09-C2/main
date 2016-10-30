@@ -26,6 +26,7 @@ import seedu.jimi.commons.exceptions.DateNotParsableException;
 import seedu.jimi.commons.exceptions.IllegalValueException;
 import seedu.jimi.commons.util.StringUtil;
 import seedu.jimi.logic.commands.AddCommand;
+import seedu.jimi.logic.commands.AddRepeatingCommand;
 import seedu.jimi.logic.commands.ClearCommand;
 import seedu.jimi.logic.commands.Command;
 import seedu.jimi.logic.commands.CompleteCommand;
@@ -78,8 +79,14 @@ public class JimiParser {
     private static final Pattern ADD_TASK_DATA_ARGS_FORMAT = 
             Pattern.compile("(\"(?<taskDetails>.+)\")( due (?<dateTime>.+))?");
     
+    private static final Pattern ADD_TASK_REPEAT_DATA_ARGS_FORMAT = Pattern
+            .compile("(\"(?<taskDetails>.+)\")( due (?<dateTime>((?! (every|repeat|recur) ).)*))?( (every|repeat|recur) (?<frequency>.+))");
+    
     private static final Pattern ADD_EVENT_DATA_ARGS_FORMAT =
             Pattern.compile("(\"(?<taskDetails>.+)\") (on|from) (?<startDateTime>((?! to ).)*)( to (?<endDateTime>.+))?");
+    
+    private static final Pattern ADD_EVENT_REPEAT_DATA_ARGS_FORMAT = Pattern.compile(
+            "(\"(?<taskDetails>.+)\") (on|from) (?<startDateTime>((?! (to|recur|repeat|every) ).)*)( to (?<endDateTime>.+))?( (every|repeat|recur) (?<frequency>.+))");
     
     private static final Pattern SHOW_COMMAND_ARGS_FORMAT = Pattern.compile("(?<sectionToShow>.+)");
     
@@ -187,6 +194,7 @@ public class JimiParser {
                 ADD_EVENT_REPEAT_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
         
         if (taskRepeatDetailsMatcher.matches()) {// if user trying to add repeating task
+            return generateAddRepeatingCommandForTask(detailsAndTagsMatcher, taskRepeatDetailsMatcher);
         } else if (eventRepeatDetailsMatcher.matches()) {// if user trying to add repeating event
             return generateAddRepeatingCommandForEvent(detailsAndTagsMatcher, eventRepeatDetailsMatcher);
         } else if (taskDetailsMatcher.matches()) { // if user trying to add task 
@@ -258,7 +266,7 @@ public class JimiParser {
         } catch (DateNotParsableException e) {
             return new IncorrectCommand(e.getMessage());
         } catch (IllegalValueException ive) {
-            return new IncorrectCommand(ive.getMessage());
+            return new IncorrectCommand(ive.getMessage() + "\n" + AddRepeatingCommand.MESSAGE_USAGE);
         }
     }
 
@@ -312,7 +320,7 @@ public class JimiParser {
         } catch (DateNotParsableException e) {
             return new IncorrectCommand(e.getMessage());
         } catch (IllegalValueException ive) {
-            return new IncorrectCommand(ive.getMessage());
+            return new IncorrectCommand(ive.getMessage() + "\n" + AddRepeatingCommand.MESSAGE_USAGE);
         }
     }
     // @@author
