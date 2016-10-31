@@ -26,6 +26,7 @@ import seedu.jimi.commons.exceptions.DateNotParsableException;
 import seedu.jimi.commons.exceptions.IllegalValueException;
 import seedu.jimi.commons.util.StringUtil;
 import seedu.jimi.logic.commands.AddCommand;
+import seedu.jimi.logic.commands.AddRepeatingCommand;
 import seedu.jimi.logic.commands.ClearCommand;
 import seedu.jimi.logic.commands.Command;
 import seedu.jimi.logic.commands.CompleteCommand;
@@ -74,8 +75,14 @@ public class JimiParser {
     private static final Pattern ADD_TASK_DATA_ARGS_FORMAT = 
             Pattern.compile("(\"(?<taskDetails>.+)\")( due (?<dateTime>.+))?");
     
+    private static final Pattern ADD_TASK_REPEAT_DATA_ARGS_FORMAT = Pattern
+            .compile("(\"(?<taskDetails>.+)\")( due (?<dateTime>((?! (every|repeat|recur) ).)*))?( (every|repeat|recur) (?<frequency>.+))");
+    
     private static final Pattern ADD_EVENT_DATA_ARGS_FORMAT =
             Pattern.compile("(\"(?<taskDetails>.+)\") (on|from) (?<startDateTime>((?! to ).)*)( to (?<endDateTime>.+))?");
+    
+    private static final Pattern ADD_EVENT_REPEAT_DATA_ARGS_FORMAT = Pattern.compile(
+            "(\"(?<taskDetails>.+)\") (on|from) (?<startDateTime>((?! (to|recur|repeat|every) ).)*)( to (?<endDateTime>.+))?( (every|repeat|recur) (?<frequency>.+))");
     
     private static final Pattern SHOW_COMMAND_ARGS_FORMAT = Pattern.compile("(?<sectionToShow>.+)");
     
@@ -188,12 +195,20 @@ public class JimiParser {
                 ADD_TASK_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
         final Matcher eventDetailsMatcher =
                 ADD_EVENT_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
+        final Matcher taskRepeatDetailsMatcher = 
+                ADD_TASK_REPEAT_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
+        final Matcher eventRepeatDetailsMatcher = 
+                ADD_EVENT_REPEAT_DATA_ARGS_FORMAT.matcher(detailsAndTagsMatcher.group("ArgsDetails").trim());
         
-        if (taskDetailsMatcher.matches()) { // if user trying to add task 
+        if (taskRepeatDetailsMatcher.matches()) {// if user trying to add repeating task
+            return generateAddRepeatingCommandForTask(detailsAndTagsMatcher, taskRepeatDetailsMatcher);
+        } else if (eventRepeatDetailsMatcher.matches()) {// if user trying to add repeating event
+            return generateAddRepeatingCommandForEvent(detailsAndTagsMatcher, eventRepeatDetailsMatcher);
+        } else if (taskDetailsMatcher.matches()) { // if user trying to add task 
             return generateAddCommandForTask(detailsAndTagsMatcher, taskDetailsMatcher);
         } else if (eventDetailsMatcher.matches()) { // if user trying to add event
             return generateAddCommandForEvent(detailsAndTagsMatcher, eventDetailsMatcher);
-        }
+        } 
         
         /* default return IncorrectCommand */
         return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
@@ -227,6 +242,40 @@ public class JimiParser {
             return new IncorrectCommand(ive.getMessage());
         }
     }
+    
+    /**
+     * Creates an AddRepeatingCommand in the context of adding a repeating event.
+     * 
+     * @return an AddRepeatingCommand if raw args is valid, else IncorrectCommand
+     */
+    private Command generateAddRepeatingCommandForEvent(final Matcher detailsAndTagsMatcher, final Matcher eventRepeatDetailsMatcher) {
+        try {
+            List<Date> startDates = parseStringToDate(eventRepeatDetailsMatcher.group("startDateTime"));
+            List<Date> endDates = parseStringToDate(eventRepeatDetailsMatcher.group("endDateTime"));
+            String freqStr = eventRepeatDetailsMatcher.group("frequency");
+            Frequency frequency = new Frequency(freqStr);
+            
+            String priority = getPriorityFromArgs(detailsAndTagsMatcher.group("priorityArguments"));
+            if (priority == null) {
+                priority = Priority.PRIO_NONE;
+            }
+            
+            return new AddRepeatingCommand(
+                    eventRepeatDetailsMatcher.group("taskDetails"),
+                    startDates,
+                    endDates,
+                    frequency.getFreqQuantifier(),
+                    frequency.getFreqWord(),
+                    frequency.getNumberOfTimes(),
+                    getTagsFromArgs(detailsAndTagsMatcher.group("tagArguments")),
+                    priority
+            );
+        } catch (DateNotParsableException e) {
+            return new IncorrectCommand(e.getMessage());
+        } catch (IllegalValueException ive) {
+            return new IncorrectCommand(ive.getMessage() + "\n" + AddRepeatingCommand.MESSAGE_USAGE);
+        }
+    }
 
     /**
      * Creates an AddCommand in the context of adding an task.
@@ -252,6 +301,33 @@ public class JimiParser {
             return new IncorrectCommand(e.getMessage());
         } catch (IllegalValueException ive) {
             return new IncorrectCommand(ive.getMessage());
+        }
+    }
+    
+    private Command generateAddRepeatingCommandForTask(final Matcher detailsAndTagsMatcher, final Matcher taskRepeatDetailsMatcher) {
+        try {
+            List<Date> dates = parseStringToDate(taskRepeatDetailsMatcher.group("dateTime"));
+            String freqStr = taskRepeatDetailsMatcher.group("frequency");
+            Frequency frequency = new Frequency(freqStr);
+            
+            String priority = getPriorityFromArgs(detailsAndTagsMatcher.group("priorityArguments"));
+            if (priority == null) {
+                priority = Priority.PRIO_NONE;
+            }
+            
+            return new AddRepeatingCommand(
+                    taskRepeatDetailsMatcher.group("taskDetails"),
+                    dates,
+                    frequency.getFreqQuantifier(),
+                    frequency.getFreqWord(),
+                    frequency.getNumberOfTimes(),
+                    getTagsFromArgs(detailsAndTagsMatcher.group("tagArguments")),
+                    priority
+            );
+        } catch (DateNotParsableException e) {
+            return new IncorrectCommand(e.getMessage());
+        } catch (IllegalValueException ive) {
+            return new IncorrectCommand(ive.getMessage() + "\n" + AddRepeatingCommand.MESSAGE_USAGE);
         }
     }
     // @@author
