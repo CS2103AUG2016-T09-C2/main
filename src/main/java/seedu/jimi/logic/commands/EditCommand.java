@@ -54,7 +54,7 @@ public class EditCommand extends Command implements TaskBookEditor {
             + "> Tip: Typing 'e', 'ed', 'edi' instead of 'edit' works too.";
     
     public static final String MESSAGE_EDIT_SUCCESS = "Updated details: %1$s";
-    private static final String MESSAGE_DUPLICATE_TASK = 
+    public static final String MESSAGE_DUPLICATE_TASK = 
             "Your new edits seem to overlap with an already existing task. Please check and try again!";
     
     private final String taskIndex; //index of task/event to be edited
