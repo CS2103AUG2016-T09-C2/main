@@ -291,11 +291,17 @@ code {
 <!---  @@author A0143471L -->
 <h2 id="features">Features</h2>
 <h4 id="viewing-help-help"><a id="help"></a> Viewing help : <code>help</code></h4>
-<p>Teaches you how to use Jimi. <br> Format: <code>help</code></p>
-<p>The user guide will open in another window.</p>
+<p>Teaches you how to use Jimi. <br> Format: <code>help [COMMAND_WORD]</code></p>
+<p>Typing <code>help</code> will open this user guide in an offline version.</p>
 <blockquote>
 <p><img src="images/Help.png" width="800"></p>
 </blockquote>
+<p>Typing <code>help COMMAND_WORD</code> e.g. <code>help add</code>, will show help for that specific command in the console box.</p>
+<blockquote>
+<p>You can also type <code>help a</code>, equivalent of <code>help add</code> as all shortcuts mentioned above applies too.</p>
+</blockquote>
+<!--- @@author -->
+<!---  @@author A0143471L -->
 <p><br><br></p>
 <h4 id="adding-a-task-add"><a id="add"></a> Adding a task: <code>add</code></h4>
 <p>Adding a floating task to Jimi.<br> Format: <code>add &quot;TASK_DETAILS&quot; [t/TAG] [p/PRIORITY]</code></p>
@@ -323,7 +329,7 @@ code {
 <blockquote>
 <ul>
 <li>If the event is more than a day long, you may include the end date_time. <br></li>
-<li>You may define the end time of the event if you wish. If you do not, however, Jimi will assume your event lasts a day long.</li>
+<li>You may define the end time of the event if you wish. If you do not, however, Jimi will assume your event lasts till midnight of the start day.</li>
 </ul>
 </blockquote>
 <p>Examples:</p>
@@ -334,11 +340,48 @@ code {
 <p><img src="images/AddEvents.png" width="800"></p>
 </blockquote>
 <p><br><br></p>
+<h4 id="finding-all-tasks-relevant-to-keywords-you-input-find"><a id="find"></a>Finding all tasks relevant to keywords you input: <code>find</code></h4>
+<p>Finds and lists all tasks in Jimi whose name contains any of the argument keywords.<br> Format: <code>find &quot;KEYWORD [MORE_KEYWORDS]&quot;</code></p>
+<blockquote>
+<ul>
+<li>The keywords must be specified in quotes.</li>
+<li>The order of the keywords you type in does not matter. e.g. <code>Essay writing</code> will match <code>Writing essay</code></li>
+<li>Task details, tags and priorities can be search. e.g. <code>find &quot;high&quot;</code> will cover high priority tasks too.</li>
+<li>Searching takes into account typos too, to a certain extent. e.g. <code>find &quot;apolet&quot;</code> will match <code>apple</code>.</li>
+<li>Tasks with details/tags/priorities matching at least one keyword will be returned. e.g. <code>Writing</code> will match <code>Writing essay</code></li>
+</ul>
+</blockquote>
+<p>Examples:</p>
+<blockquote>
+<li><code>find &quot;Jimmy&quot;</code></li>
+<li><code>find &quot;buy attend do get&quot;</code></li>
+<blockquote>
+<p><img src="images/Find.png" width="800"></p>
+</blockquote>
+<!-- @@author A0138915X -->
+<h4 id="finding-all-tasks-according-to-the-dates-you-specify-find">Finding all tasks according to the dates you specify: <code>find</code></h4>
+<p>Finds and lists all tasks and events in Jimi whose dates matches the requirements specified.<br> Format: <code>find [&quot;KEYWORD [MORE_KEYWORDS]...&quot;] on|from DATE_TIME [to DATE_TIME]</code></p>
+<blockquote>
+<ul>
+<li>You can also input just a single date to search for tasks and events relevant to that day.</li>
+<li>You can search the tasks and events by dates along with keywords as well.</li>
+<li>Simply append the dates to the keywords.</li>
+</ul>
+</blockquote>
+<p>Examples:</p>
+<li><code>find from tuesday to wednesday</code></li>
+<li><code>find &quot;attend&quot; from tomorrow to next month</code></li>
+<blockquote>
+<p><img src="images/FindDate.PNG" width="800"></p>
+</blockquote>
+<p><br><br> <!-- @@author A0138915X --></p>
+<!-- @@author A0138915X -->
 <h4 id="marking-a-task-as-complete-complete"><a id="com"></a>Marking a task as complete: <code>complete</code></h4>
 <p>Marks an existing task as complete. <br> Format: <code>complete TASK_INDEX</code></p>
 <blockquote>
 <ul>
 <li>Jimi will mark the task as completed at the specified <code>TASK_INDEX</code>.</li>
+<li>Jimi will then move the completed task to a completed task list.</li>
 <li>If you want to revert the task back as incomplete, use the <a href="#undo"><code>undo</code></a> command.</li>
 </ul>
 </blockquote>
@@ -354,12 +397,14 @@ code {
 <ul>
 <li>Jimi will delete the task specified by <code>INDEX</code>.</li>
 <li>If you need to recover your deleted task/event, use the <a href="#undo"><code>undo</code></a> command.</li>
+<li>You can also delete a range of tasks/events by specifying the <code>to</code> keyword as well.</li>
 </ul>
 </blockquote>
 <p>Examples:</p>
 <blockquote>
 <li><code>delete e2</code> : Deletes the 2nd event in Jimi.</li>
 <li><code>delete t1</code> Deletes the 1st task in the Jimi.</li>
+<li><code>delete t1 to t5</code> Deletes the 1st task to 5th task in Jimi.</li>
 <p><img src="images/Delete.png" width="800"></p>
 </blockquote>
 <p><br><br></p>
@@ -370,89 +415,111 @@ code {
 <li>Jimi edits the task/event specified by <code>INDEX</code>, <code>NEW_DETAILS</code> are simply the edits you want to make. <br></li>
 <li>You can edit everything from the items name to its priority. You can leave out fields that you do not wish to edit too. <br></li>
 <li>Although all fields are optional, they can't all be empty!</li>
-<li>Below is the format of <code>NEW_DETAILS</code> that Jimi recognizes when editting: <br></li>
+<li>The format of <code>NEW_DETAILS</code> that Jimi recognizes when editting: <br>
+<ul>
+<li>[&quot;NEW_TASK_DETAILS&quot;] [due NEW_DATETIME] | [[on NEW_START_DATETIME][to NEW_END_DATETIME]] [t/NEW_TAG] [p/NEW_PRIORITY] <br></li>
+</ul></li>
+<li>Here are some examples:</li>
 </ul>
-<table style="width:85%;">
+<table style="width:28%;">
 <colgroup>
-<col width="12%" />
-<col width="13%" />
 <col width="13%" />
 <col width="13%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>Editting A</th>
-<th align="left">What to Type for <code>NEW_DETAILS</code></th>
-<th align="left">Examples</th>
-<th align="left">What Jimi Will Do</th>
+<th align="left">If you type</th>
+<th align="left">Jimi will</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Dateless Task</td>
-<td align="left">[&quot;NEW_TASK_DETAILS&quot;] [t/NEW_TAG] [p/NEW_PRIORITY]</td>
 <td align="left">edit t1 &quot;finish this user guide&quot;</td>
-<td align="left">Edit just the name of task t1.</td>
+<td align="left">edit just the name of task t1.</td>
 </tr>
 <tr class="even">
-<td>Deadine Task</td>
-<td align="left">[&quot;NEW_TASK_DETAILS&quot;] [due NEW_DATETIME] [t/NEW_TAG] [p/NEW_PRIORITY]</td>
 <td align="left">edit t4 t/bobz</td>
-<td align="left">Edit just the tag of task t4.</td>
+<td align="left">edit just the tag of task t4.</td>
 </tr>
 <tr class="odd">
-<td>Event</td>
-<td align="left">[&quot;NEW_TASK_DETAILS&quot;] [on NEW_START_DATETIME] [to NEW_END_DATETIME] [t/NEW_TAG] [p/NEW_PRIORITY]</td>
 <td align="left">edit e2 &quot;go to concert&quot; to monday p/LOW</td>
-<td align="left">Edit name, end date and priority of event e2.</td>
+<td align="left">edit name, end date and priority of event e2.</td>
+</tr>
+<tr class="even">
+<td align="left">edit e1 on sunday</td>
+<td align="left">edit the start date of event e1.</td>
+</tr>
+<tr class="odd">
+<td align="left">edit e6 to tmr</td>
+<td align="left">edit the end date of event e6.</td>
+</tr>
+<tr class="even">
+<td align="left">edit t2 due 8pm</td>
+<td align="left">edit the deadline of task t2.</td>
+</tr>
+<tr class="odd">
+<td align="left">edit e9 on tmr to next monday</td>
+<td align="left">edit the start date and end date of event e9.</td>
 </tr>
 </tbody>
 </table>
+<blockquote>
+<p>When editting an event, you can either edit just the start date alone or the end date alone or both. But if you wish to convert to an event from a task, <code>on|from NEW_START_DATETIME</code> is no longer optional, as will be shown below.</p>
+</blockquote>
 <p><br></p>
 <ul>
 <li>Using edit, you may also convert between item types. That is, you may freely convert between floating tasks (dateless tasks), events, and deadline tasks. <br></li>
 <li>Below is the format of <code>NEW_DETAILS</code> that Jimi recognizes when converting: <br></li>
 </ul>
-<table style="width:85%;">
+<table style="width:42%;">
 <colgroup>
-<col width="12%" />
+<col width="13%" />
 <col width="13%" />
 <col width="13%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>Converting To</th>
-<th align="left">What to Type for <code>NEW_DETAILS</code></th>
+<th align="left">Converting to</th>
+<th align="left">What to type for <code>NEW_DETAILS</code></th>
 <th align="left">Examples</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Dateless Task</td>
-<td align="left">float</td>
-<td align="left">edit e1 float</td>
+<td align="left">Dateless Task</td>
+<td align="left">dateless</td>
+<td align="left"><code>edit e1 dateless</code></td>
 </tr>
 <tr class="even">
-<td>Deadline Task</td>
-<td align="left">[&quot;NEW_TASK_DETAILS&quot;] due NEW_DATETIME [t/NEW_TAG] [p/NEW_PRIORITY]</td>
-<td align="left">edit e3 due tomorrow [p/HIGH]</td>
+<td align="left">Tagless item</td>
+<td align="left">tagless</td>
+<td align="left"><code>edit t1 tagless</code></td>
 </tr>
 <tr class="odd">
-<td>Event</td>
-<td align="left">[&quot;NEW_TASK_DETAILS&quot;] on NEW_START_DATETIME [to NEW_END_DATETIME] [t/NEW_TAG] [p/NEW_PRIORITY]</td>
-<td align="left">edit t1 &quot;skip CS2103 lecture&quot; on 29 oct [t/IMPT]</td>
+<td align="left">No priority item</td>
+<td align="left">p/none</td>
+<td align="left"><code>edit t4 p/none</code></td>
+</tr>
+<tr class="even">
+<td align="left">Deadline Task</td>
+<td align="left">[&quot;NEW_TASK_DETAILS&quot;] due NEW_DATETIME [t/NEW_TAG] [p/NEW_PRIORITY]</td>
+<td align="left"><code>edit e3 due tomorrow p/HIGH</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Event</td>
+<td align="left">[&quot;NEW_TASK_DETAILS&quot;] on|from NEW_START_DATETIME [to NEW_END_DATETIME] [t/NEW_TAG] [p/NEW_PRIORITY]</td>
+<td align="left"><code>edit t1 &quot;skip CS2103 lecture&quot; on 29 oct t/IMPT</code></td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p><img src="images/Edit.png" width="800"></p>
-</blockquote>
-<blockquote>
 <ul>
-<li>If you want to undo your edit, use the <a href="#undo"><code>undo</code></a> command.</li>
+<li>If you ever make a mistake, don't be afraid to use the <a href="#undo"><code>undo</code></a> command. <br></li>
 </ul>
 </blockquote>
-<!--- @@author -->
+<blockquote>
+<p><img src="images/Edit.png" width="800"></p>
+</blockquote>
 <p><br><br> <!---  @@author A0143471L --></p>
 <h4 id="showing-section-show"><a id="show"></a>Showing section: <code>show</code></h4>
 <p>Expands and lists sections from the left summary panel. <br> Format: <code>show SECTION</code></p>
@@ -460,14 +527,17 @@ code {
 <ul>
 <li><code>SECTION</code> is case-insensitive.</li>
 <li>For the sections with two words, you can type just the first word of the two.</li>
+<li>To display all tasks and events, please input <code>show all</code> as the command.</li>
 </ul>
 </blockquote>
 <p>Examples:</p>
 <blockquote>
 <li><code>show monday</code></li>
 <li><code>show completed</code></li>
-<p><img src="images/Show.png" width="800"></p>
+<li><code>show all</code></li>
+<p><img src="images/Show.png" width="800"><!--- @@author --></p>
 </blockquote>
+<!--- @@author A0143471L -->
 <p><br><br></p>
 <h4 id="undoing-previous-action-undo"><a id="undo"></a>Undoing previous action: <code>undo</code></h4>
 <p>Undoes the previous action done in Jimi. <br> Format: <code>undo</code></p>
@@ -475,29 +545,14 @@ code {
 <h4 id="redoing-previously-undone-action-redo"><a id="redo"></a>Redoing previously undone action: <code>redo</code></h4>
 <p>Redoes the previously undone action done in the task manager. <br> Format: <code>redo</code></p>
 <p><br><br></p>
-<h4 id="finding-all-tasks-relevant-to-keywords-you-input-find"><a id="find"></a>Finding all tasks relevant to keywords you input: <code>find</code></h4>
-<p>Finds and lists all tasks in Jimi whose name contains any of the argument keywords.<br> Format: <code>find KEYWORD [MORE_KEYWORDS]</code></p>
-<blockquote>
-<ul>
-<li>The order of the keywords you type in does not matter. e.g. <code>Essay writing</code> will match <code>Writing essay</code></li>
-<li>Only the task details are searched.</li>
-<li>Only full words will be matched e.g. <code>Essay</code> will not match <code>Essays</code></li>
-<li>Tasks with details matching at least one keyword will be returned (i.e. <code>OR</code> search). e.g. <code>Writing</code> will match <code>Writing essay</code></li>
-</ul>
-</blockquote>
-<p>Examples:</p>
-<blockquote>
-<li><code>find Jimmy</code></li>
-<li><code>find Haircut</code></li>
-<p><img src="images/Find.png" width="800"></p>
-</blockquote>
-<p><br><br></p>
+<!--- @@author A0143471L -->
 <h4 id="setting-save-directory-saveas"><a id="saveas"></a>Setting save directory : <code>saveas</code></h4>
-<p>Sets new save directory for the tasks and events in Jimi. Format: <code>saveas NEW_DIRECTORY</code></p>
+<p>Saves a copy of the existing storage file to a new directiory, also all future saves save to this new directory. <br> Format: <code>saveas NEW_DIRECTORY</code></p>
 <blockquote>
 <ul>
 <li><code>NEW_DIRECTORY</code> should be in the format: <code>[desired_path]/[file_name].xml</code></li>
-<li>If you want to reset the save directory back to default, type <code>saveas reset</code></li>
+<li><strong>WARNING</strong>: this command overwrites the specified .xml file in the new save directory. It does <strong>NOT</strong> load files from the new directory, if you wish to load files from a new directory, you would have to manually transfer the content of the .xml files over.</li>
+<li>If you want to reset the save directory back to default of <code>&lt;home_folder_of_installation&gt;/data/jimi.xml</code>, type <code>saveas reset</code></li>
 </ul>
 </blockquote>
 <p>Example:</p>
@@ -522,9 +577,31 @@ code {
 </blockquote>
 <p><br><br></p>
 <h4 id="saving-the-data"><a id="save"></a>Saving the data</h4>
-<p>Address book data are saved in the hard disk automatically after any command that changes the data.<br> There is no need to save manually.</p>
+<p>The tasks and events in Jimi are saved in your hard disk automatically if you made any changes or added any new items.<br> You do not need to worry about saving the data manually.</p>
 <p><br><br></p>
+<!-- @@author A0138915X -->
 <h2 id="faq">FAQ</h2>
-<p><strong>Q</strong>: How do I transfer my data to another Computer?<br> <strong>A</strong>: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous Address Book folder. <br><br> <strong>Q</strong>: Is there a way to be notified of upcoming tasks or events that are due soon?<br> <strong>A</strong>: Jimi will display all overdue tasks, upcoming tasks and events at the top Agenda box, so you will always be notified of the most important details first. <br><br> <strong>Q</strong>: What happens if I typed in a wrong command?<br> <strong>A</strong>: An unknown command message will be shown to you. <br><br> <strong>Q</strong>: What happens if I typed in the format wrongly?<br> <strong>A</strong>: An invalid command format message will be shown to you, along with the correct format you should use instead.</p>
+<h3 id="how-do-i-transfer-my-data-to-another-computer">How do I transfer my data to another Computer?<br></h3>
+<p>Simply copy the data file specified by the save location to the other computer. Install the app in the other computer and then specify the location of the data file you want to load using the <code>saveas</code> command, or just overwrite the default data file with the old file. </p><br><br> 
+<h3 id="is-there-a-way-to-be-notified-of-upcoming-tasks-or-events-that-are-due-soon">Is there a way to be notified of upcoming tasks or events that are due soon?<br></h3>
+<p>Jimi will display all overdue tasks at the top Agenda box, so you will always be notified of the most important details first. To display upcoming tasks or events, do use the find command to list them. </p><br><br> 
+<h3>What happens if I enter a wrong command?<br></h3>
+<p>Jimi will display an error message that tells you that the command you entered is incorrect. </p><br><br> 
+<h3>What happens if I enter an invalid format?<br></h3>
+<p>Jimi will display an error message that tells you that the format for the command you entered is incorrect and will also display the correct command format required for that command. </p><br><br> 
+<h3>Can I still use the mouse to use Jimi's functionalities?<br></h3>
+<p>As Jimi is specifically catered to use the command-line interface, support for mouse-input is limited. You can display certain sections of the summary panel by clicking on the headers with the mouse although that is pretty much what Jimi can allow you to do with the mouse. </p><br><br> 
+<h3>How do I see all of my completed tasks?<br></h3>
+<p>You can do so by using the <code>show completed</code> command which will <a href="#show"><code>show</code></a> all of your completed tasks in the main window. </p><br><br> 
+<h3>Can I use this with Google Cloud or my favourite cloud service?<br></h3>
+<p>As of now, Jimi does not support any online functionality. However, there are plans for the development of online cloud services integration so users can easilly access their data from multiple devices with ease. </p><br><br> 
+<h3>How can I delete multiple tasks/events at once?<br></h3>
+<p>You can do so by using the <a href="#del"><code>delete</code></a> command follow by the range of indices of tasks or events you want to remove. </p><br><br> 
+<h3>Jimi misinterpreted my dates/times! Why is it so dumb? <br></h3>
+<p>We apologise for the mishap. Please submit an issue to us at our <a href="https://github.com/CS2103AUG2016-T09-C2/main/issues">issue tracker</a> if you would like Jimi to accept particular dates/times. <br> <br> 
+Regarding your question, given the nature of natural language processing, it is physically impossible for Jimi to interpret your dates/times with a 100% certainty. Much like how Apple's Siri and Google's Google Assistant fail to recognize accents from time to time, Jimi is similar in that regard. If it ever happens that Jimi misinterprets your dates/times, you can either <a href="#undo"><code>undo</code></a> or <a href="#edit"><code>edit</code></a> to make changes. <br> <br> 
+A failsafe option, however, is to simply type proper calender dates i.e. <code>27 oct</code> or <code>1 feb 2pm</code>, Jimi will never get that wrong! </p><br><br> 
+<h3>Why is the find command so slow sometimes? <br></h3> 
+<p>We are experimenting with a near-match search agorithm to help better your experience. Please bear with us; improving the run-time of the <a href="#find"><code>find</code></a> command is an important focus of ours and we look to fix this issue in the near future.</p>
 </body>
 </html>
