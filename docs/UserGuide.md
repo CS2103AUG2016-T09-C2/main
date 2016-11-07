@@ -23,10 +23,10 @@ At this point, we know you are just as excited as we are [about Jimi](https://gi
    
 2. Download the latest `Jimi.<version>.jar` from the [releases](../../../releases) tab.
 3. Copy the file to the folder you want to use as the home folder for Jimi.
-4. Double-click the file to start the app. The GUI should appear in a few seconds. 
+4. Double-click the file to start the app. The window should appear in a few seconds. 
 > <img src="images/WelcomeScreenUi.png" width="800">
 
-5. Type the command in the command box below and press <kbd>Enter</kbd> to execute it. <br>
+5. Type any command in the command box below and press <kbd>Enter</kbd> to execute it. <br>
    e.g. typing **`help`** and pressing <kbd>Enter</kbd> will open this user guide in another window.
 6. Some example commands you can try: 
    * **`add`**` "do laundry" `**`due`**` tomorrow` : 
@@ -127,7 +127,11 @@ Command | Default Command Word | Shortcuts
 * Eg:
    * Tomorrow 2pm
    * Next Monday
-    * 7/11/2016
+   * 7/11/2016
+   * 1 day from now
+   * tmr
+   * tdy
+   * next week
 * You can either input date, time or both.
     * If no time is given, the current time will be used instead.
     * If no date is given, the current date will be used instead.
@@ -254,7 +258,8 @@ Examples:
 Marks an existing task as complete. <br>
 Format: `complete TASK_INDEX`
 
-> * Jimi will mark the task as completed at the specified `TASK_INDEX`. 
+> * Jimi will mark the task as completed at the specified `TASK_INDEX`.
+> * Jimi will then move the completed task to a completed task list.
 > * If you want to revert the task back as incomplete, use the [`undo`](#undo) command.
 
 Example:
@@ -356,7 +361,7 @@ Examples:
 #### <a id="undo"></a>Undoing previous action: `undo`
 Undoes the previous action done in Jimi. <br>
 Format: `undo` <br>
-Only actions that make changes to the data of Jimi are undo-able. i.e. [`add`](#add), [`delete`](#del), [`edit`](#edit), [`clear`](#clear), [`complete`](#com)
+Only actions that make changes to the data of Jimi are undo-able. i.e. [`add`](#add), [`delete`](#del), [`edit`](#edit), [`clear`](#clear), [`complete`](#com) You can only undo actions done in the current session, if you exit from Jimi you cannot undo any actions done in the previous session when a new session is started.
 
 <br><br>
 
@@ -398,7 +403,7 @@ Format: `clear`
 Exits the program.<br>
 Format: `exit`  
 
-> Before exiting the program, ensure you have no unwanted actions that need to be reverted. You can only undo actions done in the current session.
+> Before exiting the program, ensure you have no unwanted actions that need to be reverted.
 
 <br><br>
 
@@ -417,20 +422,30 @@ Simply copy the data file specified by the save location to the other computer. 
 ###Is there a way to be notified of upcoming tasks or events that are due soon?<br>
 Jimi will display all overdue tasks at the top Agenda box, so you will always be notified of the most important details first. To display upcoming tasks or events, do use the find command to list them.
 <br><br>
-###What happens if I typed in a wrong command?<br>
+###What happens if I enter a wrong command?<br>
 Jimi will display an error message that tells you that the command you entered is incorrect.
 <br><br>
-###What happens if I typed in the format wrongly?<br>
+###What happens if I enter an invalid format?<br>
 Jimi will display an error message that tells you that the format for the command you entered is incorrect and will also display the correct command format required for that command.
 <br><br>
 ###Can I still use the mouse to use Jimi's functionalities?<br>
 As Jimi is specifically catered to use the command-line interface, support for mouse-input is limited. You can display certain sections of the summary panel by clicking on the headers with the mouse although that is pretty much what Jimi can allow you to do with the mouse.
 <br><br>
 ###How do I see all of my completed tasks?<br>
-You can do so by using the `show completed` command which will display all of the completed tasks in the main window.
+You can do so by using the `show completed` command which will [`show`](#show) all of your completed tasks in the main window.
 <br><br>
 ###Can I use this with Google Cloud or my favourite cloud service?<br>
 As of now, Jimi does not support any online functionality. However, there are plans for the development of online cloud services integration so users can easilly access their data from multiple devices with ease.
 <br><br>
 ###How can I delete multiple tasks/events at once?<br>
-You can do so by using the `delete` command follow by the range of indices of tasks or events you want to remove.
+You can do so by using the [`delete`](#del) command follow by the range of indices of tasks or events you want to remove.
+<br><br>
+###Jimi misinterpreted my dates/times! Why is it so dumb? <br>
+We apologise for the mishap. Please submit an issue to us at our [issue tracker](https://github.com/CS2103AUG2016-T09-C2/main/issues) if you would like Jimi to accept particular dates/times. <br>
+<br>
+Regarding your question, given the nature of natural language processing, it is physically impossible for Jimi to interpret your dates/times with a 100% certainty. Much like how Apple's Siri and Google's Google Assistant fail to recognize accents from time to time, Jimi is similar in that regard. If it ever happens that Jimi misinterprets your dates/times, you can either [`undo`](#undo) or [`edit`](#edit) to make changes. <br>
+<br>
+A failsafe option, however, is to simply type proper calender dates i.e. `27 oct` or `1 feb 2pm`, Jimi will never get that wrong!
+<br><br>
+###Why is the find command so slow sometimes? <br>
+We are experimenting with a near-match search agorithm to help better your experience. Please bear with us; improving the run-time of the [`find`](#find) command is an important focus of ours and we look to fix this issue in the near future.
