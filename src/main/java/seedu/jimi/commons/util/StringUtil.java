@@ -57,6 +57,9 @@ public class StringUtil {
      * <li> {@code query} is the same as {@code source} but has an extra character.
      * </ul>
      * 
+     * Edit distance used here is only 1, but we can easily increase that if needed, however as the edit distance <br>
+     * goes higher, string dissimilarity will widen. <br>
+     * <br>
      * All matches are case-insensitive and have all spaces removed in both strings prior to comparison. <br>
      * Conditions are also short-circuited for performance and memory. <br>
      * This is a recursive method that executes {@code editDistance} times.
