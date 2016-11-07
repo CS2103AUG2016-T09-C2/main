@@ -29,16 +29,14 @@ public class AddCommand extends Command implements TaskBookEditor {
 
     public static final String MESSAGE_USAGE = 
             COMMAND_WORD + ": Adds a task or event to Jimi with one optional tag.\n"
-            + "\n"
+            + "> Shortcuts: a, ad\n"
             + "To add a task:\n"
             + "Parameters: \"TASK_DETAILS\" [due DATE_TIME] [t/TAG]\n"
             + "Example: " + COMMAND_WORD + " \"do dishes\" t/important\n"
             + "\n"
             + "To add an event:\n"
             + "Parameters: \"TASK_DETAILS\" on|from START_DATE_TIME [to END_DATE_TIME] [t/TAG]\n"
-            + "Example: " + COMMAND_WORD + " \"linkin park concert\" on sunday 2pm t/fun\n"
-            + "\n"
-            + "> Tip: Typing 'a' or 'ad' instead of 'add' works too.\n";
+            + "Example: " + COMMAND_WORD + " \"linkin park concert\" on sunday 2pm t/fun";
 
     public static final String MESSAGE_SUCCESS = "New task added: %1$s";
     public static final String MESSAGE_DUPLICATE_TASK = "This task already exists in Jimi";
@@ -110,7 +108,7 @@ public class AddCommand extends Command implements TaskBookEditor {
     @Override
     public boolean isValidCommandWord(String commandWord) {
         for (int i = 1; i <= COMMAND_WORD.length(); i++) {
-            if (commandWord.toLowerCase().equals(COMMAND_WORD.substring(0, i))) {
+            if (commandWord.equalsIgnoreCase(COMMAND_WORD.substring(0, i))) {
                 return true;
             }
         }

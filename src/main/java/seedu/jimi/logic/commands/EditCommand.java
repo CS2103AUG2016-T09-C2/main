@@ -41,6 +41,7 @@ public class EditCommand extends Command implements TaskBookEditor {
     
     public static final String MESSAGE_USAGE = 
             COMMAND_WORD + ": Edits an existing task/event in Jimi following add constraints. \n"
+            + "> Shortcuts: e, ed, edi\n"
             + "Parameters: INDEX(must be t<positive integer> or e<positive integer>) EDITS_TO_MAKE\n" 
             + "You can edit everything from the task name to its tags. \n"
             + "You can leave out fields that you do not wish to edit too. \n"
@@ -49,9 +50,7 @@ public class EditCommand extends Command implements TaskBookEditor {
             + "Example: " + COMMAND_WORD + " t2 \"clear trash\"\n"
             + "\n"
             + "If you wish to remove all dates/tags from an existing task: \n"
-            + "Example: " + COMMAND_WORD + " e1 dateless or " + COMMAND_WORD + " e1 tagless\n"
-            + "\n"
-            + "> Tip: Typing 'e', 'ed', 'edi' instead of 'edit' works too.";
+            + "Example: " + COMMAND_WORD + " e1 dateless or " + COMMAND_WORD + " e1 tagless";
     
     public static final String MESSAGE_EDIT_SUCCESS = "Updated details: %1$s";
     public static final String MESSAGE_DUPLICATE_TASK = 
@@ -84,7 +83,7 @@ public class EditCommand extends Command implements TaskBookEditor {
     /** Constructor for removal of tags/dates at {@code taskIndex}. */
     public EditCommand(String taskIndex, EditType removeType) {
         assert removeType == EditType.REMOVE_DATES || removeType == EditType.REMOVE_TAGS;
-        this.taskIndex = taskIndex;
+        this.taskIndex = taskIndex.toLowerCase().trim();
         if (removeType == EditType.REMOVE_TAGS) {
             newTagList = new UniqueTagList();
         }
@@ -99,7 +98,7 @@ public class EditCommand extends Command implements TaskBookEditor {
             tagSet.add(new Tag(tagName));
         }
         
-        this.taskIndex = taskIndex;
+        this.taskIndex = taskIndex.toLowerCase().trim();
         
         if (name != null) {
             this.newName = new Name(name);
@@ -155,7 +154,7 @@ public class EditCommand extends Command implements TaskBookEditor {
     @Override
     public boolean isValidCommandWord(String commandWord) {
         for (int i = 1; i <= COMMAND_WORD.length(); i++) {
-            if (commandWord.toLowerCase().equals(COMMAND_WORD.substring(0, i))) {
+            if (commandWord.equalsIgnoreCase(COMMAND_WORD.substring(0, i))) {
                 return true;
             }
         }

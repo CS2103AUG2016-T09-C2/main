@@ -1,11 +1,14 @@
 <!---
 @@author A0140133B
 -->
+
+<img src="images/JimiLogo.png" width="800"><br>
+
 # Developer Guide 
 
 Jimi is a simple task manager specifically catered for people like [Jim](http://www.comp.nus.edu.sg/~cs2103/AY1617S1/contents/handbook.html#handbook-project-product). It is a Java desktop application that has both a Text UI and a GUI. Jimi handles most, if not all, input via the command line interface (CLI).
 
-This guide describes the design and implementation of Jimi. It will help you understand how Jimi works and how you can further contribute to its development. We have organised this guide in a top-down manner so that you can understand the big picture before moving on to the more detailed sections.
+This guide describes the design and implementation of Jimi. Here, we share the inner workings of how Jimi works and how you can further contribute to its development. We have organised this guide in a top-down fashion so that you first understand the big picture before moving on to the finer details.
 
 <br>
 
@@ -35,9 +38,9 @@ This guide describes the design and implementation of Jimi. It will help you und
     This app will not work with earlier versions of Java 8.
     
 2. **Eclipse** IDE
-3. **e(fx)clipse** plugin for Eclipse (Do the steps from step 2 onwards given in
+3. **e(fx)clipse** plugin for Eclipse (Follow the steps from starting from step 2 in 
    [this page](http://www.eclipse.org/efxclipse/install.html#for-the-ambitious)).
-4. **Buildship Gradle Integration** plugin from the Eclipse Marketplace
+4. **Buildship Gradle Integration** plugin from the Eclipse Marketplace.
 
 <br>
 
@@ -73,12 +76,12 @@ This guide describes the design and implementation of Jimi. It will help you und
 <br>
 ## Design
 
-/* @@author A0140133B */
+<!--- @@author A0140133B -->
 
 ### Architecture
 
 <img src="images/Architecture.png" width="600"><br><br>
-The **_Architecture Diagram_** given above explains the high-level design of the App.
+The **_Architecture Diagram_** shown in fig 1.1 explains the high-level design of the App.
 Given below is a quick overview of each component.
 
 `Main` has only one class called [`MainApp`](../src/main/java/seedu/jimi/MainApp.java). It is responsible for:
@@ -92,8 +95,8 @@ Two of those classes play important roles at the architecture level.
 <br>* `LogsCenter` : Used by many classes to write log messages to the App's log file.
 <br><br>
 The rest of the App consists four components.
-* [**`UI`**](#ui-component) : Displays interactions with the user
-* [**`Logic`**](#logic-component) : Executes the commands
+* [**`UI`**](#ui-component) : Displays interactions with the user.
+* [**`Logic`**](#logic-component) : Executes the commands.
 * [**`Model`**](#model-component) : Holds the data of the App in-memory.
 * [**`Storage`**](#storage-component) : Reads data from, and writes data to, the hard disk.
 
@@ -101,12 +104,12 @@ Each of the four components
 * Defines its [_API (Application program interface)_](#API) in an `interface` with the same name as the Component.
 * Exposes its functionality using a `{Component Name}Manager` class.
 
-For example, the `Logic` component (see the class diagram given below) defines it's API in the `Logic.java`
+For example, the `Logic` component (see the class diagram in fig 2.1) defines it's API in the `Logic.java`
 interface and exposes its functionality using the `LogicManager.java` class.<br>
 <br>
 <img src="images/LogicClassDiagram.png" width="800"><br><br>
 
-The _Sequence Diagram_ below shows how the components interact for the scenario where the user issues the
+The _Sequence Diagram_ shown in fig 2.2 shows how the components interact for the scenario where the user issues the
 command `delete t3`.
 <br>
 <img src="images\SDforDeleteTask.png" width="800">
@@ -114,7 +117,7 @@ command `delete t3`.
 >Note how the `Model` simply raises a `TaskBookChangedEvent` when Jimi's data changes,
  instead of asking the `Storage` to save the updates to the hard disk.
 
-The diagram below shows how the `EventsCenter` reacts to that event, which eventually results in the updates
+The diagram shown in fig 2.3 shows how the `EventsCenter` reacts to that event, which eventually results in the updates
 being saved to the hard disk and the status bar of the UI being updated to reflect the 'Last Updated' time. 
 <br>
 <img src="images\SDforDeleteTaskEventHandling.png" width="800">
@@ -127,7 +130,7 @@ The sections below give more details of each component.
 
 <br><br>
 
-/* @@author A0140133B */
+<!--- @@author A0138915X -->
 
 ### UI component
 <br>
@@ -136,9 +139,9 @@ The sections below give more details of each component.
 
 **API** : [`Ui.java`](../src/main/java/seedu/jimi/ui/Ui.java)
 
-The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `TaskListPanel`,
-`StatusBarFooter`, `BrowserPanel` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class
-and they can be loaded using the `UiPartLoader`.
+As shown in fig 3.1, the UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `TaskListPanel`,
+`StatusBarFooter`, `AgendarPanel` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class
+and they can be loaded using the `UiPartLoader`. 
 
 The `UI` component uses JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files
  that are in the `src/main/resources/view` folder.<br>
@@ -151,8 +154,9 @@ The `UI` component:
 * Responds to events raised from various parts of the App and updates the UI accordingly.
 
 <br>
+<!--- @@author -->
 
-/* @@author A0140133B */
+<!--- @@author A0140133B -->
 
 ### Logic component
 <br>
@@ -161,18 +165,18 @@ The `UI` component:
 **API** : [`Logic.java`](../src/main/java/seedu/jimi/logic/Logic.java)
 
 The `Logic` component:
-* uses the `Parser` class to parse the user command.
+* uses the `JimiParser` class to parse the user command.
 * Creates a `Command` object which is executed by the `LogicManager`.
 * Changes the model (e.g. when adding a task) and/or raise events along with the command execution.
 * Encapsulates the result of the command execution as a `CommandResult` object and passes it back to the `Ui`.
 
-Given below is the Sequence Diagram for interactions within the `Logic` component for the `execute("delete t1")`
+Shown in fig 4.1 is the Sequence Diagram for interactions within the `Logic` component for the `execute("delete t1")`
  API call.<br>
 <img src="images/DeleteTaskSdForLogic.png" width="800"><br><br>
 
 <br>
 
-/* @@author A0140133B */
+<!--- @@author A0140133B -->
 
 ### Model component
 
@@ -190,7 +194,7 @@ The `Model` component:
 
 <br>
 
-/* @@author A0140133B */
+ <!--- @@author A0140133B -->
 
 ### Storage component
 
@@ -322,18 +326,19 @@ Here are the steps to create a new release.
 A project often depends on third-party libraries. For example, Jimi depends on the
 [Jackson library](http://wiki.fasterxml.com/JacksonHome) for XML parsing.
 
-These _dependencies_ can be manually managed by:
-a. Including those libraries in the repo (this bloats the repo size)
+You can automate the managing of these _dependencies_ using Gradle. Gradle can download the dependencies automatically, which can remove the hassle of manually downloading and updating the libraries yourself.<br>
+
+It is recommended to use Gradle to manage the dependencies for you, however, if you choose not to use Gradle for whatever reason you can also manually manage these _dependencies_ by:<br>
+a. Including those libraries in the repo (this bloats the repo size)<br>
 b. Requiring developers to download those libraries manually (this creates extra work for developers)<br>
 
-On the other hand, you can automate the managing of these _dependencies_ using Gradle. For example, Gradle can download the dependencies automatically, which
-is better than the above alternatives.<br>
+
 
 
 <br>
 <br>
 
-/* @@author A0138915X */
+<!--- @@author A0138915X -->
 <a id="app-a"></a>
 ## Appendix A : User Stories 
 
@@ -366,7 +371,7 @@ Priority | As a ... | I want to ... | So that I can...
 <br>
 <br>
 
-/* @@author A0143471L */
+<!--- @@author A0143471L -->
 <a id="app-b"></a>
 ## Appendix B : Use Cases 
 
@@ -639,7 +644,7 @@ Use case ends.
 
 <br>
 <br>
-/* @@author A0138915X */
+<!--- @@author A0138915X -->
 <a id="app-c"></a>
 ## Appendix C : Non Functional Requirements 
 
@@ -689,7 +694,7 @@ Other requirements can be found in the project constraints section of our team's
 
 <br>
 <br>
-/* @@author A0143471L */
+<!--- @@author A0143471L -->
 <a id="app-e"></a>
 ## Appendix E : Product Survey 
 

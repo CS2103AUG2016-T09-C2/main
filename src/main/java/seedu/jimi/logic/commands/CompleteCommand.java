@@ -19,6 +19,7 @@ public class CompleteCommand extends Command implements TaskBookEditor{
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Marks an existing task in Jimi as completed.\n"
+            + "> Shortcuts: c, co, com, comp, ... , complet\n"
             + "You can specify the task/event by entering its index number given in the last listing. \n"
             + "Parameters: INDEX (must be a positive integer)\n"
             + "Example: " + COMMAND_WORD + " t1";
@@ -31,11 +32,11 @@ public class CompleteCommand extends Command implements TaskBookEditor{
     public final String targetIndex;
     
     public CompleteCommand() {
-        this(null);
+        this.targetIndex = null;
     }
     
     public CompleteCommand(String targetIndex) {
-        this.targetIndex = targetIndex;
+        this.targetIndex = targetIndex.toLowerCase().trim();
     }
     
     @Override
@@ -71,7 +72,7 @@ public class CompleteCommand extends Command implements TaskBookEditor{
     @Override
     public boolean isValidCommandWord(String commandWord) {
         for (int i = 1; i <= COMMAND_WORD.length(); i++) {
-            if (commandWord.toLowerCase().equals(COMMAND_WORD.substring(0, i))) {
+            if (commandWord.equalsIgnoreCase(COMMAND_WORD.substring(0, i))) {
                 return true;
             }
         }

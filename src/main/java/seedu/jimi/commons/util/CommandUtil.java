@@ -67,7 +67,7 @@ public class CommandUtil {
         return cmdStubList.stream()
                 .filter(c -> c.isValidCommandWord(target) 
                         || StringUtil.isValidSubstrings(c.getCommandWord(), target)
-                        || (cmdWordNearMatches.containsKey(target)
+                        || (cmdWordNearMatches.containsKey(target) // Checking dictionary for potential near match.
                                 && cmdWordNearMatches.get(target).contains(c.getCommandWord())))
                 .map(c -> c.getCommandWord())
                 .collect(Collectors.toList());
@@ -84,11 +84,14 @@ public class CommandUtil {
         assert cmdStubList != null && allCmdWords != null;
         cmdWordNearMatches = new HashMap<String, Set<String>>();
         allCmdWords.forEach(cmdWord -> {
-            Set<String> oneEditDistanceDict = Dictionary.generateOneEditDistanceDict(cmdWord);
+            Set<String> oneEditDistanceDict = DictionaryUtil.generateOneEditDistanceDict(cmdWord);
             
             Set<String> twoEditDistanceDict = new HashSet<String>();
-            oneEditDistanceDict.forEach(w -> twoEditDistanceDict.addAll(Dictionary.generateOneEditDistanceDict(w)));
+            // Generating a two edit distance dictionary from each word of the one edit distance dictionary.
+            oneEditDistanceDict.forEach(w -> twoEditDistanceDict.addAll(DictionaryUtil.generateOneEditDistanceDict(w)));
             
+            // Storing the words in the cmdWordNearMatches dictionary.
+            // There can be multiple command word matches for the same typo, hence the value of the map is a set.
             for (String twoEditDistanceWord : twoEditDistanceDict) {
                 Set<String> cmdWordMatches = cmdWordNearMatches.containsKey(twoEditDistanceWord)
                         ? cmdWordNearMatches.get(twoEditDistanceWord) : new HashSet<String>();

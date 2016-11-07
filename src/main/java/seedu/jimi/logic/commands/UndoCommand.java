@@ -12,8 +12,7 @@ public class UndoCommand extends Command {
     public static final String COMMAND_WORD = "undo";
     public static final String MESSAGE_USAGE = 
             COMMAND_WORD + ": Undoes the previous task.\n" 
-            + "To undo a task, type undo.\n"
-            + "> Tip: Typing 'u', 'un', 'und' instead of 'undo' works too.\n";
+            + "> Shortcuts: u, un, und";
     
     public UndoCommand() {}
 
@@ -27,7 +26,7 @@ public class UndoCommand extends Command {
     @Override
     public boolean isValidCommandWord(String commandWord) {
         for (int i = 1; i <= COMMAND_WORD.length(); i++) {
-            if (commandWord.toLowerCase().equals(COMMAND_WORD.substring(0, i))) {
+            if (commandWord.equalsIgnoreCase(COMMAND_WORD.substring(0, i))) {
                 return true;
             }
         }

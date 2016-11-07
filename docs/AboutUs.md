@@ -1,3 +1,5 @@
+<img src="images/JimiLogo.png" width="800"><br>
+
 # About Us
 
 We are the team in charge of developing Jimi, a command-line based task manager that is designed for fast typers. <br>
@@ -23,8 +25,7 @@ We are the team in charge of developing Jimi, a command-line based task manager 
     * [Add tasks/events](https://github.com/CS2103AUG2016-T09-C2/main/blob/master/docs/UserGuide.md#add)
     * [Edit tasks/events](https://github.com/CS2103AUG2016-T09-C2/main/blob/master/docs/UserGuide.md#edit)
     * [Set new save directory](https://github.com/CS2103AUG2016-T09-C2/main/blob/master/docs/UserGuide.md#saveas)
-    * Near match search
-    * Real time command suggestions in console
+    * [Near match search](https://github.com/CS2103AUG2016-T09-C2/main/blob/master/docs/UserGuide.md#find)
 * Code written:[[functional code](https://github.com/CS2103AUG2016-T09-C2/main/blob/master/collated/main/A0140133B.md)][[test code](https://github.com/CS2103AUG2016-T09-C2/main/blob/master/collated/test/A0140133B.md)][[docs](https://github.com/CS2103AUG2016-T09-C2/main/blob/master/collated/docs/A0140133B.md)]
 *  Other major contributions:
     * Set up JimiParser
@@ -34,6 +35,9 @@ We are the team in charge of developing Jimi, a command-line based task manager 
     * Update indexed commands to work with new indices
     * Refactoring/Morphing AddressBook -> Jimi
     * UI beautifying with Ze Xuan
+    * Nag about code quality/style/admin issues
+    * Real time command suggestions in console
+    * Up/down arrow keys to cycle input history
 
 
 -----
@@ -56,6 +60,7 @@ src="images/ChongZeXuan.jpg" width="150"><br>
     * Create MainWindow layout
     * Update indexed commands to work with new indices
     * Set up FilteredListManager
+    * Test Script for Manual Testing
     
     
 -----
@@ -71,10 +76,13 @@ src="images/ChongZeXuan.jpg" width="150"><br>
 * Other major contributions:
     * Set tasks with priority
     * Updating of documents
+    * Implement Junit Testing for Deadlines/Events
+    * Implement Gui Tests
+    * Upload SampleData for Manual Testing
     
 -----
 
-#### <a id="yunxuan"></a> Zhang Yunxuan [@yunz](https://github.com/yunxz)
+#### <a id="yunxuan"></a> Zhang Yunxuan [@yunxz](https://github.com/yunxz)
 <img src="images/ZhangYunxuan.jpg" width="150"><br>
 * Components in charge of : [Model](https://github.com/CS2103AUG2016-T09-C2/main/blob/master/docs/DeveloperGuide.md#model-component)
 * Aspects/tools in charge of: Testing, Code Quality Control

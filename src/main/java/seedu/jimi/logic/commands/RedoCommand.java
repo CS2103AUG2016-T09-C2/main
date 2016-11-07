@@ -11,9 +11,8 @@ public class RedoCommand extends Command {
 
     public static final String COMMAND_WORD = "redo";
     public static final String MESSAGE_USAGE = 
-            COMMAND_WORD + ": Redoes the previous task.\n" 
-            + "To redo a task, type redo.\n"
-            + "> Tip: Typing 'r', 're', 'red' instead of 'redo' works too.\n";
+            COMMAND_WORD + ": Redoes the previously undone task.\n" 
+            + "> Shortcuts: r, re, red";
 
     public RedoCommand() {}
 
@@ -27,7 +26,7 @@ public class RedoCommand extends Command {
     @Override
     public boolean isValidCommandWord(String commandWord) {
         for (int i = 1; i <= COMMAND_WORD.length(); i++) {
-            if (commandWord.toLowerCase().equals(COMMAND_WORD.substring(0, i))) {
+            if (commandWord.equalsIgnoreCase(COMMAND_WORD.substring(0, i))) {
                 return true;
             }
         }

@@ -1,5 +1,7 @@
 package seedu.jimi.model.tag;
 
+import java.util.Arrays;
+
 import seedu.jimi.commons.exceptions.IllegalValueException;
 
 /**
@@ -12,14 +14,15 @@ import seedu.jimi.commons.exceptions.IllegalValueException;
  **/
 
 public class Priority extends Tag {
-    
-    public static final String MESSAGE_PRIORITY_CONSTRAINTS =
-            "Priority (case-insensitive) names should only be: high, med, low or none. ";
-    
     public final static String PRIO_LOW = "low";
     public final static String PRIO_MED = "med";
     public final static String PRIO_HIGH = "high";
     public final static String PRIO_NONE = "none";
+    
+
+    public static final String MESSAGE_PRIORITY_CONSTRAINTS = 
+            "Invalid priority! Valid priority (case-insensitive) names include: \n"
+            + "> " + String.join(", ", Arrays.asList(PRIO_NONE, PRIO_LOW, PRIO_MED, PRIO_HIGH));
     
     /**
      * Instantiate with no priority tag.
@@ -46,7 +49,9 @@ public class Priority extends Tag {
      * Returns true if a given string is a valid priority name.
      */
     public static boolean isValidPriorityName(String test) {
-        return test.toLowerCase().equals(PRIO_LOW) || test.toLowerCase().equals(PRIO_MED)
-                || test.toLowerCase().equals(PRIO_HIGH) || test.toLowerCase().equals(PRIO_NONE);
+        return test.equalsIgnoreCase(PRIO_LOW) 
+                || test.equalsIgnoreCase(PRIO_MED) 
+                || test.equalsIgnoreCase(PRIO_HIGH)
+                || test.equalsIgnoreCase(PRIO_NONE);
     }
 }
