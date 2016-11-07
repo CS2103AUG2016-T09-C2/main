@@ -25,7 +25,13 @@ Jimi Manual Test Script
 2.3.3 Type into the command box: `add "attend seminar" on today 4pm`<br>
 2.3.4 Event should be added to the agenda event panel in main window; Event shoudld be highlighted;  Added event details should be shown in result display window; End date of event should be today 23:59.<br>
 
-tags prior
+2.4 Adding Floating Tasks with tags:<br>
+2.4.1 Type into the command box: `add "very important" t/Important`<br>
+2.4.2 Task should be added to agenda task panel in main window, tagged; Added task details should be shown in result display window; Task should be highlighted.<br>
+
+2.5 Adding Deadline Tasks with priority:<br>
+2.5.1 Type into the command box: `add "high priority" due tomorrow p/HIGH`<br>
+2.5.2 Task should be added to agenda task panel in main window in red; Added task details should be shown in result display window; Task should be highlighted.<br>
 
 3. Delete Command<br>
 
