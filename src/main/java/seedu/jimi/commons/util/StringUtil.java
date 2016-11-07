@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
  */
 public class StringUtil {
     
-    private static final int DEFAULT_EDIT_DISTANCE = 2; // Edit distance to quantify string similarity.
+    private static final int DEFAULT_EDIT_DISTANCE = 1; // Edit distance to quantify string similarity.
     
     // Percentage of containing string for the contained string to be a valid substring.
     private static final double SUBSTRING_ALLOWANCE = 1.0 / 3.0; // = a third 
