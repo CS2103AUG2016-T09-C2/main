@@ -29,7 +29,6 @@ public class AddCommandTest extends AddressBookGuiTest {
         ReadOnlyTask[] currentList = td.getTypicalTasks();
         ReadOnlyTask[] todayList = dt.getTodayTasks();
         todayList = TestUtil.addTasksToList(todayList, e.getTodayTasks());
-        System.out.println(todayList.length);
         
         //add one task
         TestFloatingTask taskToAdd = TypicalTestFloatingTasks.dream;
