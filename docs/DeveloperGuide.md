@@ -403,10 +403,6 @@ Use case ends.
 > 1a1. App shows user an error message with correct format needed. <br>
 > Use case resumes at step 1.
 
-1b. User enters a event with overlapping time with another event.
-> 1b1. App shows user a notification and continues with the addition. <br>
-> Use case ends.
-
 <br>
 <br>
 
@@ -504,11 +500,6 @@ Use case ends.
 > 4c1. App shows an error message to user. <br>
 > Use case resumes at step 3.
 
-4d. User enters new time details that overlap with another event's time details.
-
-> 4d1. App shows notification and continues the editing of the details. <br>
-> Use case ends.
-
 <br>
 <br>
 
@@ -558,11 +549,6 @@ Use case ends.
 1a. No previous action was done before.
 
 >1a1. App shows an error message to user. <br>
-> Use case ends.
-
-1b. Previous action is an invalid action to be undone.
-
->1b1. App shows an error message to user. <br>
 > Use case ends.
 
 <br>
@@ -648,12 +634,12 @@ Use case ends.
 <a id="app-c"></a>
 ## Appendix C : Non Functional Requirements 
 
-1. Should work on any [mainstream OS](#mainstream-os) as long as it has Java `1.8.0_60` or higher installed.
+1. Should work on any [mainstream OS](#os) as long as it has Java `1.8.0_60` or higher installed.
 2. Should be able to hold up to 1000 Tasks.
 3. Should come with automated unit tests and open source code.
 4. Should favor DOS style commands over Unix-style commands.
-5. Should support [natural language processing](#natural-language-processing) with [natural language commands](#natural-language-commands).
-6. Should be able to do all functions through the [command-line interface](command-line interface).
+5. Should support [natural language processing](#nlp) with [natural language commands](#nlc).
+6. Should be able to do all functions through the [command-line interface](#cli).
 7. Should be able to be accessed offline.
 8. Should load within 1 second of opening the program.
 9. Should be able to display full list of tasks within 1 second.
@@ -670,26 +656,27 @@ Other requirements can be found in the project constraints section of our team's
 <a id="app-d"></a>
 ## Appendix D : Glossary 
 
-##### Application program interface
+##### <a id="api"></a>Application program interface
 > A set of routines, protocols, and tools for building software applications.
 
+<br>
 
-##### Mainstream OS
+##### <a id="os"></a>Mainstream OS
 > Windows, Linux, OS-X
 
 <br>
 
-##### Natural Language Commands
+##### <a id="nlc"></a>Natural Language Commands
 > Commands formatted in a language that has developed naturally in use and is intuitive for humans to understand. (as contrasted with an artificial language or computer code).
 
 <br>
 
-##### Natural Language Processing
+##### <a id="nlp"></a>Natural Language Processing
 > A branch of artificial intelligence that deals with analyzing, understanding and generating the languages that humans use naturally in order to interface with computers in both written and spoken contexts using natural human languages instead of computer languages.
 
 <br>
 
-##### Command-line interface
+##### <a id="cli"></a>Command-line interface
 > User interface to a computer's operating system or an application in which the user responds to a visual prompt by typing in a command on a specified line, receives a response back from the system, and then enters another command, and so forth.
 
 <br>

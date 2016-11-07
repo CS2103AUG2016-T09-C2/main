@@ -111,6 +111,7 @@ public class ModelManager extends ComponentManager implements Model {
     @Override
     public void replaceTask(ReadOnlyTask oldTask, ReadOnlyTask newTask) throws DuplicateTaskException {
         taskBook.replaceTask(oldTask, newTask);
+        updateAllFilteredListsToNormalListing(); //refresh all filtered lists
         indicateTaskBookChanged();
         highlightLatestUpdatedItem(newTask);
     }

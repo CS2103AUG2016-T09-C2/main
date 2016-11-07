@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
  */
 public class StringUtil {
     
-    private static final int DEFAULT_EDIT_DISTANCE = 2; // Edit distance to quantify string similarity.
+    private static final int DEFAULT_EDIT_DISTANCE = 1; // Edit distance to quantify string similarity.
     
     // Percentage of containing string for the contained string to be a valid substring.
     private static final double SUBSTRING_ALLOWANCE = 1.0 / 3.0; // = a third 
@@ -57,6 +57,9 @@ public class StringUtil {
      * <li> {@code query} is the same as {@code source} but has an extra character.
      * </ul>
      * 
+     * Edit distance used here is only 1, but we can easily increase that if needed, however as the edit distance <br>
+     * goes higher, string dissimilarity will widen. <br>
+     * <br>
      * All matches are case-insensitive and have all spaces removed in both strings prior to comparison. <br>
      * Conditions are also short-circuited for performance and memory. <br>
      * This is a recursive method that executes {@code editDistance} times.
